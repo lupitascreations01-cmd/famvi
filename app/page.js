@@ -317,6 +317,27 @@ if (pantalla === 'dashboard') {
               <p style={{fontSize:'0.82rem', color:'#6B7280'}}>Respondió todos los check-ins. Sin alertas.</p>
             </div>
           </div>
+          <div style={{background:'white', borderRadius:'12px', padding:'1rem', marginBottom:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
+  <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Simbología</p>
+  <div style={{display:'flex', flexDirection:'column', gap:'0.5rem'}}>
+    <div style={{display:'flex', alignItems:'center', gap:'0.6rem'}}>
+      <span style={{width:'10px', height:'10px', borderRadius:'50%', background:'#74C69D', display:'block', flexShrink:0}}></span>
+      <span style={{fontSize:'0.82rem', color:'#6B7280'}}>Todo bien — respondió y está bien</span>
+    </div>
+    <div style={{display:'flex', alignItems:'center', gap:'0.6rem'}}>
+      <span style={{width:'10px', height:'10px', borderRadius:'50%', background:'#F4A261', display:'block', flexShrink:0}}></span>
+      <span style={{fontSize:'0.82rem', color:'#6B7280'}}>Atención — respondió pero hay algo que revisar</span>
+    </div>
+    <div style={{display:'flex', alignItems:'center', gap:'0.6rem'}}>
+      <span style={{width:'10px', height:'10px', borderRadius:'50%', background:'#E76F51', display:'block', flexShrink:0}}></span>
+      <span style={{fontSize:'0.82rem', color:'#6B7280'}}>Alerta — no respondió o necesita ayuda</span>
+    </div>
+    <div style={{display:'flex', alignItems:'center', gap:'0.6rem'}}>
+      <span style={{width:'10px', height:'10px', borderRadius:'50%', background:'#D1D5DB', display:'block', flexShrink:0}}></span>
+      <span style={{fontSize:'0.82rem', color:'#6B7280'}}>Pendiente — el check-in aún no ha llegado</span>
+    </div>
+  </div>
+</div>
           <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem', marginBottom:'1.2rem'}}>
             {[['💊','Medicinas','Tomó sus pastillas ✓','verde'],['🍽️','Alimentación','Almorzó bien hoy','verde'],['😊','Ánimo','Se siente "más o menos"','amarillo'],['🚶','Movilidad','Check-in a las 5PM','gris']].map(([icono, titulo, desc, color]) => (
               <div key={titulo} style={{background:'white', borderRadius:'16px', padding:'1.1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
