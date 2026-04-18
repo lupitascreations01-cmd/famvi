@@ -221,7 +221,7 @@ const toggleDia = (dia) => {
         ))}
 
         <button
-          onClick={() => setPantalla('dashboard')}
+          onClick={() => setPantalla('resumen')}
           style={{width:'100%', padding:'1rem', background:'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'1rem', fontWeight:'500', cursor:'pointer', marginTop:'0.5rem'}}>
           Activar Famvi ✓
         </button>
@@ -234,7 +234,73 @@ const toggleDia = (dia) => {
     </main>
   )
 }
-  if (pantalla === 'dashboard') {
+if (pantalla === 'resumen') {
+  return (
+    <main style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'sans-serif',
+      padding: '2rem'
+    }}>
+      <h1 style={{color:'#fff', fontWeight:'300', fontSize:'2rem', marginBottom:'1rem'}}>
+        fam<span style={{color:'#74C69D'}}>vi</span>
+      </h1>
+      <div style={{background:'white', borderRadius:'24px', padding:'2rem', width:'100%', maxWidth:'400px'}}>
+        <div style={{textAlign:'center', marginBottom:'1.5rem'}}>
+          <div style={{width:'64px', height:'64px', background:'#D8F3DC', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'2rem', margin:'0 auto 1rem'}}>✅</div>
+          <h2 style={{fontSize:'1.5rem', fontWeight:'400', marginBottom:'0.4rem'}}>¡Todo listo!</h2>
+          <p style={{color:'#6B7280', fontSize:'0.88rem'}}>Así quedó configurado Famvi para tu familiar</p>
+        </div>
+
+        <div style={{background:'#F8F7F4', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem'}}>
+          <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Áreas monitoreadas</p>
+          <div style={{display:'flex', flexWrap:'wrap', gap:'0.5rem'}}>
+            {categorias.map(c => (
+              <span key={c} style={{background:'#D8F3DC', color:'#2D6A4F', padding:'0.3rem 0.75rem', borderRadius:'20px', fontSize:'0.82rem', fontWeight:'500'}}>{c}</span>
+            ))}
+          </div>
+        </div>
+
+        <div style={{background:'#F8F7F4', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem'}}>
+          <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Días de envío</p>
+          <div style={{display:'flex', gap:'0.4rem'}}>
+            {['L','M','X','J','V','S','D'].map(d => (
+              <div key={d} style={{width:'32px', height:'32px', borderRadius:'8px', background: dias.includes(d) ? '#D8F3DC' : '#E5E7EB', color: dias.includes(d) ? '#2D6A4F' : '#9CA3AF', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.78rem', fontWeight:'600'}}>
+                {d}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{background:'#F8F7F4', borderRadius:'16px', padding:'1.2rem', marginBottom:'1.5rem'}}>
+          <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Horarios de check-in</p>
+          {[['🌅','Mañana','8:00 AM'],['☀️','Mediodía','1:00 PM'],['🌆','Tarde','5:00 PM']].map(([icono, nombre, hora]) => (
+            <div key={nombre} style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.5rem 0', borderBottom:'1px solid #E5E7EB'}}>
+              <span style={{fontSize:'0.88rem'}}>{icono} {nombre}</span>
+              <span style={{fontSize:'0.85rem', fontWeight:'500', color:'#2D6A4F'}}>{hora}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{background:'#D8F3DC', borderRadius:'12px', padding:'1rem', marginBottom:'1.5rem', display:'flex', gap:'0.75rem', alignItems:'flex-start'}}>
+          <span style={{fontSize:'1.2rem'}}>💬</span>
+          <p style={{fontSize:'0.82rem', color:'#2D6A4F', lineHeight:'1.5', margin:0}}>En unos minutos tu familiar recibirá su primer mensaje de Famvi en WhatsApp.</p>
+        </div>
+
+        <button
+          onClick={() => setPantalla('dashboard')}
+          style={{width:'100%', padding:'1rem', background:'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'1rem', fontWeight:'500', cursor:'pointer'}}>
+          Ver mi dashboard →
+        </button>
+      </div>
+    </main>
+  )
+}  
+if (pantalla === 'dashboard') {
     return (
       <main style={{minHeight:'100vh', background:'#F8F7F4', fontFamily:'sans-serif', paddingBottom:'80px'}}>
         <div style={{background:'white', padding:'1rem 1.5rem', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
