@@ -1,5 +1,10 @@
 'use client'
-  export default function Home() {
+
+import { useRouter } from 'next/navigation'
+
+export default function Home() {
+  const router = useRouter()
+
   return (
     <main style={{
       minHeight: '100vh',
@@ -31,31 +36,37 @@
       </p>
 
       <div style={{display:'flex', flexDirection:'column', gap:'0.75rem', width:'100%', maxWidth:'300px'}}>
-        <button style={{
-          width: '100%',
-          padding: '1rem',
-          background: '#74C69D',
-          color: '#1A1A2E',
-          border: '2px solid #74C69D',
-          borderRadius: '50px',
-          fontSize: '1rem',
-          fontWeight: '600',
-          cursor: 'pointer'
-        }}>
+        <button
+          onClick={() => router.push('/onboarding')}
+          style={{
+            width: '100%',
+            padding: '1rem',
+            background: '#74C69D',
+            color: '#1A1A2E',
+            border: '2px solid #74C69D',
+            borderRadius: '50px',
+            fontSize: '1rem',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}>
           Comenzar gratis →
         </button>
 
-        <button style={{
-          width: '100%',
-          padding: '1rem',
-          background: 'transparent',
-          color: '#ffffff',
-          border: '2px solid #ffffff',
-          borderRadius: '50px',
-          fontSize: '1rem',
-          fontWeight: '500',
-          cursor: 'pointer'
-        }}>
+        <button
+          onClick={() => {
+            document.getElementById('como-funciona')?.scrollIntoView({behavior: 'smooth'})
+          }}
+          style={{
+            width: '100%',
+            padding: '1rem',
+            background: 'transparent',
+            color: '#ffffff',
+            border: '2px solid #ffffff',
+            borderRadius: '50px',
+            fontSize: '1rem',
+            fontWeight: '500',
+            cursor: 'pointer'
+          }}>
           Ver cómo funciona ↓
         </button>
       </div>
