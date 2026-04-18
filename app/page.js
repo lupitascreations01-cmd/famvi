@@ -293,6 +293,11 @@ if (pantalla === 'resumen') {
 
         <button
           onClick={() => setPantalla('dashboard')}
+          <button
+  onClick={() => setPantalla('configuracion')}
+  style={{width:'100%', padding:'0.75rem', background:'none', border:'none', color:'#6B7280', fontSize:'0.85rem', cursor:'pointer', marginTop:'0.5rem'}}>
+  ← Volver
+</button>
           style={{width:'100%', padding:'1rem', background:'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'1rem', fontWeight:'500', cursor:'pointer'}}>
           Ver mi dashboard →
         </button>
@@ -351,6 +356,11 @@ if (pantalla === 'dashboard') {
             ))}
           </div>
           <button style={{width:'100%', padding:'1rem', background:'#25D366', color:'white', border:'none', borderRadius:'12px', fontSize:'0.92rem', fontWeight:'500', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'0.5rem'}}>
+           <button
+  onClick={() => setPantalla('resumen')}
+  style={{width:'100%', padding:'0.75rem', background:'none', border:'1.5px solid #D1D5DB', borderRadius:'12px', color:'#6B7280', fontSize:'0.85rem', cursor:'pointer', marginTop:'0.5rem'}}>
+  ← Volver al resumen
+</button>
             💬 Enviar mensaje a tu familiar
           </button>
         </div>
