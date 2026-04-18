@@ -42,6 +42,49 @@ export default function Home() {
     )
   }
 
+  if (pantalla === 'como-funciona') {
+  return (
+    <main style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)',
+      fontFamily: 'sans-serif',
+      padding: '2rem'
+    }}>
+      <div style={{maxWidth:'500px', margin:'0 auto'}}>
+        <h1 style={{color:'#fff', fontWeight:'300', fontSize:'2rem', marginBottom:'0.3rem', textAlign:'center', paddingTop:'2rem'}}>
+          fam<span style={{color:'#74C69D'}}>vi</span>
+        </h1>
+        <p style={{color:'rgba(255,255,255,0.6)', textAlign:'center', marginBottom:'2rem', fontStyle:'italic'}}>¿Cómo funciona?</p>
+
+        {[
+          ['1','Tú configuras en 5 minutos','Agregas a tu familiar, eliges qué monitorear y a qué horas enviar los check-ins.'],
+          ['2','Tu familiar recibe mensajes en WhatsApp','Nada que instalar. Solo responde botones simples desde su WhatsApp de siempre.'],
+          ['3','Tú ves el resumen en tu dashboard','Cada día ves cómo estuvo — qué respondió, cómo se sintió, si comió bien.'],
+          ['4','Alerta si algo falla','Si tu familiar no responde, recibes una notificación inmediata en tu WhatsApp.'],
+        ].map(([num, titulo, desc]) => (
+          <div key={num} style={{background:'rgba(255,255,255,0.08)', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', display:'flex', gap:'1rem', border:'1px solid rgba(255,255,255,0.1)'}}>
+            <div style={{width:'36px', height:'36px', borderRadius:'50%', background:'#74C69D', color:'#1A1A2E', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'600', fontSize:'0.85rem', flexShrink:0}}>{num}</div>
+            <div>
+              <h4 style={{color:'white', fontSize:'0.95rem', fontWeight:'500', marginBottom:'0.3rem'}}>{titulo}</h4>
+              <p style={{color:'rgba(255,255,255,0.55)', fontSize:'0.82rem', lineHeight:'1.5'}}>{desc}</p>
+            </div>
+          </div>
+        ))}
+
+        <button
+          onClick={() => setPantalla('onboarding')}
+          style={{width:'100%', padding:'1rem', background:'#74C69D', color:'#1A1A2E', border:'none', borderRadius:'50px', fontSize:'1rem', fontWeight:'600', cursor:'pointer', marginTop:'0.5rem'}}>
+          Comenzar gratis →
+        </button>
+        <button
+          onClick={() => setPantalla('landing')}
+          style={{width:'100%', padding:'0.75rem', background:'none', border:'none', color:'rgba(255,255,255,0.6)', fontSize:'0.85rem', cursor:'pointer', marginTop:'0.5rem'}}>
+          ← Volver
+        </button>
+      </div>
+    </main>
+  )
+}
   if (pantalla === 'familiar') {
     return (
       <main style={{
