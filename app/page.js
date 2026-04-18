@@ -74,6 +74,30 @@ export default function Home() {
         <button
           onClick={() => setPantalla('onboarding')}
           style={{width:'100%', padding:'1rem', background:'#74C69D', color:'#1A1A2E', border:'none', borderRadius:'50px', fontSize:'1rem', fontWeight:'600', cursor:'pointer', marginTop:'0.5rem'}}>
+          <div style={{background:'rgba(255,255,255,0.06)', borderRadius:'20px', padding:'1.2rem', margin:'1.5rem 0', border:'1px solid rgba(255,255,255,0.1)'}}>
+  <p style={{color:'rgba(255,255,255,0.5)', fontSize:'0.75rem', textAlign:'center', marginBottom:'1rem', textTransform:'uppercase', letterSpacing:'1px'}}>Lo que ve tu familiar</p>
+  
+  <div style={{borderRadius:'12px', overflow:'hidden', maxWidth:'300px', margin:'0 auto'}}>
+    <div style={{background:'#075E54', padding:'0.7rem 1rem', display:'flex', alignItems:'center', gap:'0.6rem'}}>
+      <div style={{width:'32px', height:'32px', background:'#25D366', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.8rem'}}>🤖</div>
+      <div>
+        <div style={{color:'white', fontSize:'0.85rem', fontWeight:'500'}}>Famvi</div>
+        <div style={{color:'rgba(255,255,255,0.6)', fontSize:'0.7rem'}}>en línea</div>
+      </div>
+    </div>
+    
+    <div style={{background:'#ECE5DD', padding:'1rem'}}>
+      <div style={{background:'white', borderRadius:'12px 12px 12px 2px', padding:'0.6rem 0.8rem', maxWidth:'85%', boxShadow:'0 1px 3px rgba(0,0,0,0.1)', marginBottom:'0.75rem'}}>
+        <p style={{fontSize:'0.8rem', color:'#1A1A2E', lineHeight:'1.4', margin:0}}>¡Buenos días, María! 🌸<br/>¿Ya tomaste tus medicinas de la mañana?</p>
+        <p style={{fontSize:'0.65rem', color:'#6B7280', margin:'0.2rem 0 0', textAlign:'right'}}>8:00 AM ✓✓</p>
+      </div>
+      <div style={{display:'flex', gap:'0.4rem'}}>
+        <button style={{background:'#25D366', color:'white', border:'none', padding:'0.4rem 0.7rem', borderRadius:'8px', fontSize:'0.72rem', cursor:'pointer', fontFamily:'sans-serif'}}>✅ Sí, ya las tomé</button>
+        <button style={{background:'#25D366', color:'white', border:'none', padding:'0.4rem 0.7rem', borderRadius:'8px', fontSize:'0.72rem', cursor:'pointer', fontFamily:'sans-serif'}}>⏰ Recuérdame</button>
+      </div>
+    </div>
+  </div>
+</div>
           Comenzar gratis →
         </button>
         <button
