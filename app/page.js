@@ -139,7 +139,7 @@ export default function Home() {
           </select>
           <input placeholder="WhatsApp de tu familiar" style={{width:'100%', padding:'0.8rem', border:'1.5px solid #E5E7EB', borderRadius:'12px', marginBottom:'1.5rem', fontSize:'0.95rem', boxSizing:'border-box'}} />
           <button
-            onClick={() => setPantalla('dashboard')}
+            onClick={() => setPantalla('configuracion')}
             style={{width:'100%', padding:'1rem', background:'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'1rem', fontWeight:'500', cursor:'pointer'}}>
             Continuar →
           </button>
@@ -153,6 +153,77 @@ export default function Home() {
     )
   }
 
+  if (pantalla === 'configuracion') {
+  return (
+    <main style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'sans-serif',
+      padding: '2rem'
+    }}>
+      <h1 style={{color:'#fff', fontWeight:'300', fontSize:'2rem', marginBottom:'1rem'}}>
+        fam<span style={{color:'#74C69D'}}>vi</span>
+      </h1>
+      <div style={{background:'white', borderRadius:'24px', padding:'2rem', width:'100%', maxWidth:'400px'}}>
+        <p style={{fontSize:'0.75rem', color:'#2D6A4F', textTransform:'uppercase', letterSpacing:'2px', marginBottom:'0.5rem'}}>Paso 3 de 3</p>
+        <h2 style={{fontSize:'1.5rem', fontWeight:'400', marginBottom:'0.4rem'}}>¿Qué quieres monitorear?</h2>
+        <p style={{color:'#6B7280', fontSize:'0.88rem', marginBottom:'1.5rem'}}>Elige áreas, días y horarios de los check-ins.</p>
+
+        <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.6rem'}}>Áreas de cuidado</p>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.6rem', marginBottom:'1.2rem'}}>
+          {[['💊','Medicinas'],['🍽️','Alimentación'],['😊','Estado de ánimo'],['🚶','Movilidad'],['😴','Sueño'],['💧','Hidratación']].map(([icono, nombre]) => (
+            <div key={nombre} style={{border:'1.5px solid #2D6A4F', borderRadius:'12px', padding:'0.8rem', background:'#D8F3DC', display:'flex', alignItems:'center', gap:'0.5rem', cursor:'pointer'}}>
+              <span style={{fontSize:'1.2rem'}}>{icono}</span>
+              <span style={{fontSize:'0.83rem', fontWeight:'500'}}>{nombre}</span>
+            </div>
+          ))}
+        </div>
+
+        <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.6rem'}}>Días de envío</p>
+        <div style={{display:'flex', gap:'0.4rem', marginBottom:'1.2rem', justifyContent:'space-between'}}>
+          {['L','M','X','J','V','S','D'].map((dia) => (
+            <div key={dia} style={{flex:1, aspectRatio:'1', border:'1.5px solid #2D6A4F', borderRadius:'10px', background:'#D8F3DC', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.78rem', fontWeight:'600', color:'#2D6A4F', cursor:'pointer'}}>
+              {dia}
+            </div>
+          ))}
+        </div>
+
+        <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.6rem'}}>Horarios de check-in</p>
+        {[['Mañana','8','AM'],['Mediodía','1','PM'],['Tarde','5','PM']].map(([nombre, hora, ampm]) => (
+          <div key={nombre} style={{display:'flex', alignItems:'center', gap:'0.75rem', padding:'0.85rem 1rem', border:'1.5px solid #2D6A4F', borderRadius:'12px', marginBottom:'0.6rem', background:'#D8F3DC'}}>
+            <input type="checkbox" defaultChecked style={{accentColor:'#2D6A4F', width:'16px', height:'16px'}} />
+            <span style={{fontSize:'0.88rem', flex:1}}>{nombre}</span>
+            <select defaultValue={hora} style={{padding:'0.3rem', border:'1px solid #D1D5DB', borderRadius:'8px', fontSize:'0.78rem'}}>
+              {['6','7','8','9','10','11','12','1','2','3','4','5','6','7','8','9','10'].map(h => <option key={h}>{h}</option>)}
+            </select>
+            <span style={{fontSize:'0.8rem', color:'#6B7280'}}>:</span>
+            <select style={{padding:'0.3rem', border:'1px solid #D1D5DB', borderRadius:'8px', fontSize:'0.78rem'}}>
+              <option>00</option><option>15</option><option>30</option><option>45</option>
+            </select>
+            <select defaultValue={ampm} style={{padding:'0.3rem', border:'1px solid #D1D5DB', borderRadius:'8px', fontSize:'0.78rem'}}>
+              <option>AM</option><option>PM</option>
+            </select>
+          </div>
+        ))}
+
+        <button
+          onClick={() => setPantalla('dashboard')}
+          style={{width:'100%', padding:'1rem', background:'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'1rem', fontWeight:'500', cursor:'pointer', marginTop:'0.5rem'}}>
+          Activar Famvi ✓
+        </button>
+        <button
+          onClick={() => setPantalla('familiar')}
+          style={{width:'100%', padding:'0.75rem', background:'none', border:'none', color:'#6B7280', fontSize:'0.85rem', cursor:'pointer', marginTop:'0.5rem'}}>
+          ← Volver
+        </button>
+      </div>
+    </main>
+  )
+}
   if (pantalla === 'dashboard') {
     return (
       <main style={{minHeight:'100vh', background:'#F8F7F4', fontFamily:'sans-serif', paddingBottom:'80px'}}>
