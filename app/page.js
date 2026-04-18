@@ -3,7 +3,17 @@
 import { useState } from 'react'
 
 export default function Home() {
-  const [pantalla, setPantalla] = useState('landing')
+ const [pantalla, setPantalla] = useState('landing')
+const [categorias, setCategorias] = useState(['Medicinas','Alimentación','Estado de ánimo','Movilidad'])
+const [dias, setDias] = useState(['L','M','X','J','V','S','D'])
+
+const toggleCategoria = (nombre) => {
+  setCategorias(prev => prev.includes(nombre) ? prev.filter(c => c !== nombre) : [...prev, nombre])
+}
+
+const toggleDia = (dia) => {
+  setDias(prev => prev.includes(dia) ? prev.filter(d => d !== dia) : [...prev, dia])
+}
 
   if (pantalla === 'onboarding') {
     return (
@@ -176,20 +186,20 @@ export default function Home() {
         <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.6rem'}}>Áreas de cuidado</p>
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.6rem', marginBottom:'1.2rem'}}>
           {[['💊','Medicinas'],['🍽️','Alimentación'],['😊','Estado de ánimo'],['🚶','Movilidad'],['😴','Sueño'],['💧','Hidratación']].map(([icono, nombre]) => (
-            <div key={nombre} style={{border:'1.5px solid #2D6A4F', borderRadius:'12px', padding:'0.8rem', background:'#D8F3DC', display:'flex', alignItems:'center', gap:'0.5rem', cursor:'pointer'}}>
-              <span style={{fontSize:'1.2rem'}}>{icono}</span>
-              <span style={{fontSize:'0.83rem', fontWeight:'500'}}>{nombre}</span>
-            </div>
-          ))}
+  <div key={nombre} onClick={() => toggleCategoria(nombre)} style={{border:`1.5px solid ${categorias.includes(nombre) ? '#2D6A4F' : '#E5E7EB'}`, borderRadius:'12px', padding:'0.8rem', background: categorias.includes(nombre) ? '#D8F3DC' : '#F8F7F4', display:'flex', alignItems:'center', gap:'0.5rem', cursor:'pointer'}}>
+    <span style={{fontSize:'1.2rem'}}>{icono}</span>
+    <span style={{fontSize:'0.83rem', fontWeight:'500', color: categorias.includes(nombre) ? '#1A1A2E' : '#6B7280'}}>{nombre}</span>
+  </div>
+))}
         </div>
 
         <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.6rem'}}>Días de envío</p>
         <div style={{display:'flex', gap:'0.4rem', marginBottom:'1.2rem', justifyContent:'space-between'}}>
           {['L','M','X','J','V','S','D'].map((dia) => (
-            <div key={dia} style={{flex:1, aspectRatio:'1', border:'1.5px solid #2D6A4F', borderRadius:'10px', background:'#D8F3DC', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.78rem', fontWeight:'600', color:'#2D6A4F', cursor:'pointer'}}>
-              {dia}
-            </div>
-          ))}
+  <div key={dia} onClick={() => toggleDia(dia)} style={{flex:1, aspectRatio:'1', border:`1.5px solid ${dias.includes(dia) ? '#2D6A4F' : '#E5E7EB'}`, borderRadius:'10px', background: dias.includes(dia) ? '#D8F3DC' : '#F8F7F4', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.78rem', fontWeight:'600', color: dias.includes(dia) ? '#2D6A4F' : '#6B7280', cursor:'pointer'}}>
+    {dia}
+  </div>
+))}
         </div>
 
         <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.6rem'}}>Horarios de check-in</p>
