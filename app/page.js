@@ -1,4 +1,5 @@
-export default function Home() {
+'use client'
+  export default function Home() {
   return (
     <main style={{
       minHeight: '100vh',
