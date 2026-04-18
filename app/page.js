@@ -208,14 +208,14 @@ export default function Home() {
           <h2 style={{fontSize:'1.3rem',fontWeight:'400',marginBottom:'0.2rem'}}>Hoy</h2>
           <p style={{color:'#6B7280',fontSize:'0.82rem',marginBottom:'1.2rem'}}>{new Date().toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
           <div style={{background:'white',borderRadius:'20px',padding:'1.4rem',marginBottom:'1.2rem',boxShadow:'0 2px 8px rgba(0,0,0,0.07)',display:'flex',gap:'1rem',alignItems:'center'}}>
-            <div style={{width:'56px',height:'56px',borderRadius:'50%',background:'#D8F3DC',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.6rem',flexShrink:0}}>✅</div>
+            <div style={{width:'56px',height:'56px',borderRadius:'50%',background:'#F3F4F6',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.6rem',flexShrink:0}}>⏳</div>
             <div>
-              <h3 style={{fontSize:'0.95rem',fontWeight:'500',marginBottom:'0.2rem'}}>Todo va bien hoy</h3>
-              <p style={{fontSize:'0.82rem',color:'#6B7280'}}>Respondió todos los check-ins. Sin alertas.</p>
+              <h3 style={{fontSize:'0.95rem',fontWeight:'500',marginBottom:'0.2rem'}}>Esperando respuestas</h3>
+              <p style={{fontSize:'0.82rem',color:'#6B7280'}}>Los check-ins comenzarán a llegar según el horario configurado.</p>
             </div>
           </div>
           <div style={{background:'white',borderRadius:'12px',padding:'1rem',marginBottom:'1rem',boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
-            <p style={{fontSize:'0.75rem',fontWeight:'500',color:'#6B7280',textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.75rem'}}>Simbología</p>
+            <p style={{fontSize:'0.75rem',fontWeight:'500',color:'#6B7280',textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.75rem'}}>¿Qué significa cada color?</p>
             <div style={{display:'flex',flexDirection:'column',gap:'0.5rem'}}>
               {[['#74C69D','Todo bien — respondió y está bien'],['#F4A261','Atención — respondió pero hay algo que revisar'],['#E76F51','Alerta — no respondió o necesita ayuda'],['#D1D5DB','Pendiente — el check-in aún no ha llegado']].map(([color, texto]) => (
                 <div key={color} style={{display:'flex',alignItems:'center',gap:'0.6rem'}}>
@@ -226,7 +226,7 @@ export default function Home() {
             </div>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0.8rem',marginBottom:'1.2rem'}}>
-            {[['💊','Medicinas','Tomó sus pastillas ✓','#74C69D'],['🍽️','Alimentación','Almorzó bien hoy','#74C69D'],['😊','Ánimo','Se siente "más o menos"','#F4A261'],['🚶','Movilidad','Check-in a las 5PM','#D1D5DB']].map(([icono, titulo, desc, color]) => (
+            {[['💊','Medicinas','Esperando primer check-in','#D1D5DB'],['🍽️','Alimentación','Esperando primer check-in','#D1D5DB'],['😊','Ánimo','Esperando primer check-in','#D1D5DB'],['🚶','Movilidad','Esperando primer check-in','#D1D5DB']].map(([icono, titulo, desc, color]) => (
               <div key={titulo} style={{background:'white',borderRadius:'16px',padding:'1.1rem',boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
                 <div style={{display:'flex',justifyContent:'space-between',marginBottom:'0.6rem'}}>
                   <span style={{fontSize:'1.3rem'}}>{icono}</span>
