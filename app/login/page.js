@@ -75,16 +75,21 @@ export default function Login() {
   const handleGoogle = async () => {
     setCargando(true)
     setError('')
+    console.log('URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+    console.log('KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'existe' : 'NO EXISTE')
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/dashboard`
         }
       })
+      console.log('data:', data)
+      console.log('error:', error)
       if (error) throw error
     } catch (err) {
-      setError('Error al conectar con Google. Intenta de nuevo.')
+      console.log('catch error:', err)
+      setError('Error: ' + err.message)
       setCargando(false)
     }
   }
