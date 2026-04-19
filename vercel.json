@@ -1,0 +1,8 @@
+echo '{
+  "crons": [
+    {
+      "path": "/api/cron/send-checkins",
+      "schedule": "0 * * * *"
+    }
+  ]
+}' > vercel.json
