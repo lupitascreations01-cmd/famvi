@@ -342,7 +342,7 @@ export default function Home() {
             Al crear tu cuenta aceptas nuestros <span style={{color:'#2D6A4F',cursor:'pointer'}}>Términos de uso</span> y <span style={{color:'#2D6A4F',cursor:'pointer'}}>Política de privacidad</span>
           </p>
 
-          <button onClick={() => setPantalla('precios')} style={{width:'100%',padding:'0.75rem',background:'none',border:'none',color:'#6B7280',fontSize:'0.85rem',cursor:'pointer',marginTop:'0.5rem'}}>← Volver</button>
+          <button onClick={() => window.location.href='/precios'} style={{width:'100%',padding:'0.75rem',background:'none',border:'none',color:'#6B7280',fontSize:'0.85rem',cursor:'pointer',marginTop:'0.5rem'}}>← Volver</button>
         </div>
       </main>
     )
