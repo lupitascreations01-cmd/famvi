@@ -8,28 +8,19 @@ const supabase = createClient(
 // Mensajes por categoría — variados para no ser repetitivo
 const MENSAJES = {
   medicamentos: [
-    '💊 Hola {nombre}! Es hora de tomar tus medicamentos. ¿Ya los tomaste?',
-    '💊 {nombre}, recordatorio de medicamentos. ¿Los tomaste hoy?',
-    '💊 Hora de medicamentos {nombre} 🕐 ¿Todo bien?'
+    '💊 Hola {nombre}! Es hora de tus medicamentos.\n\nResponde:\n✅ Sí tomé\n⏰ En un rato\n❌ No pude\n😔 No me siento bien',
   ],
   comida: [
-    '🍽️ {nombre}, ¿ya almorzaste? Cuéntame cómo te fue.',
-    '🍽️ Hora de comer {nombre}! ¿Ya comiste algo rico?',
-    '🍽️ Hola {nombre}! ¿Comiste bien hoy?'
+    '🍽️ {nombre}, ¿ya comiste?\n\nResponde:\n✅ Sí comí\n⏰ Ahorita como\n❌ No he comido\n😔 No tengo apetito',
   ],
   ejercicio: [
-    '🚶 {nombre}, ¿pudiste caminar o hacer algo de ejercicio hoy?',
-    '🚶 {nombre}! ¿Cómo te fue con el ejercicio de hoy?',
-    '🚶 Hola {nombre}, ¿diste tu caminata hoy?'
+    '🚶 {nombre}, ¿pudiste moverte un poco hoy?\n\nResponde:\n✅ Sí caminé\n⏰ Lo haré después\n❌ No pude hoy\n😔 No me siento bien',
   ],
   bienestar: [
-    '💙 {nombre}, ¿cómo te sientes hoy?',
-    '💙 Hola {nombre}! ¿Cómo estás?',
-    '💙 {nombre}, cuéntame: ¿cómo va tu día?'
+    '💙 {nombre}, ¿cómo te sientes hoy?\n\nResponde:\n😊 Muy bien\n🙂 Bien\n😐 Más o menos\n😔 No muy bien',
   ],
   default: [
-    '💙 Hola {nombre}! ¿Cómo estás hoy?',
-    '💙 {nombre}, ¿todo bien por allá?'
+    '💙 Hola {nombre}! ¿Cómo estás?\n\nResponde:\n😊 Muy bien\n🙂 Bien\n😐 Más o menos\n😔 No muy bien',
   ]
 }
 
