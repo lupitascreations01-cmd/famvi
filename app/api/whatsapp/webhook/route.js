@@ -111,6 +111,7 @@ export async function POST(request) {
 
     // Extraer número limpio
     const whatsappNumero = from.replace('whatsapp:', '').trim()
+    console.log('Número recibido:', whatsappNumero)
 
     // Buscar familiar por número de WhatsApp
     const { data: familiar, error: familiarError } = await supabase
