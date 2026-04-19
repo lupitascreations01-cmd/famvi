@@ -297,7 +297,7 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => setPantalla('login')} style={{width:'100%',padding:'0.9rem',background:plan.nombre==='Familiar'?'#74C69D':'#2D6A4F',color:plan.nombre==='Familiar'?'#1A1A2E':'white',border:'none',borderRadius:'12px',fontSize:'0.95rem',fontWeight:'600',cursor:'pointer'}}>
+              <button onClick={() => window.location.href='/login'} style={{width:'100%',padding:'0.9rem',background:plan.nombre==='Familiar'?'#74C69D':'#2D6A4F',color:plan.nombre==='Familiar'?'#1A1A2E':'white',border:'none',borderRadius:'12px',fontSize:'0.95rem',fontWeight:'600',cursor:'pointer'}}>
                 Elegir {plan.nombre} →
               </button>
             </div>
@@ -335,7 +335,7 @@ export default function Home() {
           </button>
 
           <p style={{textAlign:'center',fontSize:'0.82rem',color:'#6B7280',marginBottom:'0.5rem'}}>
-            ¿Ya tienes cuenta? <span onClick={() => setPantalla('login')} style={{color:'#2D6A4F',fontWeight:'500',cursor:'pointer'}}>Inicia sesión</span>
+            ¿Ya tienes cuenta? <span onClick={() => window.location.href='/login'} style={{color:'#2D6A4F',fontWeight:'500',cursor:'pointer'}}>Inicia sesión</span>
           </p>
 
           <p style={{textAlign:'center',fontSize:'0.75rem',color:'#9CA3AF',lineHeight:'1.5'}}>
