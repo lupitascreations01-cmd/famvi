@@ -8,6 +8,41 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 )
 
+const ESTADO_CONFIG = {
+  verde:    { color: '#74C69D', bg: '#D8F3DC', emoji: '✅', texto: 'Bien' },
+  amarillo: { color: '#F4A261', bg: '#FEF3C7', emoji: '⏰', texto: 'Atención' },
+  rojo:     { color: '#E76F51', bg: '#FEE2E2', emoji: '🚨', texto: 'Alerta' },
+  pendiente:{ color: '#D1D5DB', bg: '#F3F4F6', emoji: '⏳', texto: 'Pendiente' },
+}
+
+const CATEGORIA_EMOJI = {
+  medicamentos: '💊',
+  comida: '🍽️',
+  ejercicio: '🚶',
+  bienestar: '💙',
+  mensaje: '💬',
+  default: '📋'
+}
+
+function EstadoBadge({ estado }) {
+  const cfg = ESTADO_CONFIG[estado] || ESTADO_CONFIG.pendiente
+  return (
+    <span style={{
+      background: cfg.bg,
+      color: cfg.color,
+      padding: '0.2rem 0.6rem',
+      borderRadius: '20px',
+      fontSize: '0.72rem',
+      fontWeight: '600',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.25rem'
+    }}>
+      {cfg.emoji} {cfg.texto}
+    </span>
+  )
+}
+
 export default function Dashboard() {
   const [tab, setTab] = useState('inicio')
   const [usuario, setUsuario] = useState(null)
@@ -39,7 +74,7 @@ export default function Dashboard() {
           .select('*')
           .in('familiar_id', ids)
           .order('creado_en', { ascending: false })
-          .limit(20)
+          .limit(50)
         if (checkinsData) setCheckins(checkinsData)
       }
 
@@ -60,6 +95,21 @@ export default function Dashboard() {
     background:'none', padding:'0.5rem'
   })
 
+  // Resumen de hoy por familiar
+  const checkinsDehoy = checkins.filter(c => {
+    const hoy = new Date()
+    const fecha = new Date(c.creado_en)
+    return fecha.toDateString() === hoy.toDateString()
+  })
+
+  const estadoFamiliar = (familiarId) => {
+    const hoy = checkinsDehoy.filter(c => c.familiar_id === familiarId)
+    if (hoy.length === 0) return 'pendiente'
+    if (hoy.some(c => c.estado === 'rojo')) return 'rojo'
+    if (hoy.some(c => c.estado === 'amarillo')) return 'amarillo'
+    return 'verde'
+  }
+
   if (cargando) return (
     <main style={{minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#F8F7F4', fontFamily:'sans-serif'}}>
       <div style={{textAlign:'center'}}>
@@ -74,6 +124,7 @@ export default function Dashboard() {
   return (
     <main style={{minHeight:'100vh', background:'#F8F7F4', fontFamily:'sans-serif', paddingBottom:'70px'}}>
 
+      {/* Header */}
       <div style={{background:'white', padding:'1rem 1.5rem', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', position:'sticky', top:0, zIndex:10}}>
         <span style={{fontSize:'1.4rem', color:'#2D6A4F', fontWeight:'300'}}>fam<span style={{color:'#74C69D'}}>vi</span></span>
         <div style={{display:'flex', alignItems:'center', gap:'0.75rem'}}>
@@ -89,6 +140,7 @@ export default function Dashboard() {
 
       <div style={{padding:'1.4rem', maxWidth:'600px', margin:'0 auto'}}>
 
+        {/* TAB: INICIO */}
         {tab === 'inicio' && (
           <div>
             <div style={{marginBottom:'1.1rem', marginTop:'0.5rem'}}>
@@ -107,35 +159,68 @@ export default function Dashboard() {
               </div>
             ) : (
               <>
-                <div style={{background:'white', borderRadius:'20px', padding:'1.4rem', marginBottom:'1.2rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', gap:'1rem', alignItems:'center'}}>
-                  <div style={{width:'56px', height:'56px', borderRadius:'50%', background:'#F3F4F6', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.6rem', flexShrink:0}}>⏳</div>
-                  <div>
-                    <h3 style={{fontSize:'0.95rem', fontWeight:'500', marginBottom:'0.2rem'}}>Esperando respuestas</h3>
-                    <p style={{fontSize:'0.82rem', color:'#6B7280'}}>Los check-ins comenzarán según el horario configurado.</p>
-                  </div>
-                </div>
-
-                <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Tus familiares</p>
-                {familiares.map((f, i) => (
-                  <div key={f.id} style={{background:'white', borderRadius:'16px', padding:'1.1rem', marginBottom:'0.75rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', alignItems:'center', gap:'1rem'}}>
-                    <div style={{width:'42px', height:'42px', borderRadius:'50%', background:colores[i % colores.length], display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'1rem', fontWeight:'600', flexShrink:0}}>
-                      {f.nombre.charAt(0).toUpperCase()}
+                {/* Tarjetas de familiares con estado */}
+                <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Estado de hoy</p>
+                {familiares.map((f, i) => {
+                  const estado = estadoFamiliar(f.id)
+                  const cfg = ESTADO_CONFIG[estado]
+                  const ultimoCheckin = checkinsDehoy.find(c => c.familiar_id === f.id)
+                  return (
+                    <div key={f.id} style={{background:'white', borderRadius:'16px', padding:'1.1rem', marginBottom:'0.75rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', alignItems:'center', gap:'1rem', borderLeft:`4px solid ${cfg.color}`}}>
+                      <div style={{width:'42px', height:'42px', borderRadius:'50%', background:colores[i % colores.length], display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'1rem', fontWeight:'600', flexShrink:0}}>
+                        {f.nombre.charAt(0).toUpperCase()}
+                      </div>
+                      <div style={{flex:1}}>
+                        <div style={{display:'flex', alignItems:'center', gap:'0.5rem', marginBottom:'0.2rem'}}>
+                          <h4 style={{fontSize:'0.9rem', fontWeight:'500', margin:0}}>{f.nombre}</h4>
+                          <EstadoBadge estado={estado} />
+                        </div>
+                        <p style={{fontSize:'0.78rem', color:'#6B7280', margin:0}}>
+                          {ultimoCheckin
+                            ? `${CATEGORIA_EMOJI[ultimoCheckin.categoria] || '📋'} ${ultimoCheckin.resumen || ultimoCheckin.respuesta || 'Respondió'}`
+                            : 'Sin check-ins hoy aún'}
+                        </p>
+                      </div>
                     </div>
-                    <div style={{flex:1}}>
-                      <h4 style={{fontSize:'0.9rem', fontWeight:'500', marginBottom:'0.2rem'}}>{f.nombre}</h4>
-                      <p style={{fontSize:'0.78rem', color:'#6B7280'}}>{f.relacion} · {f.ciudad || ''} · {f.whatsapp}</p>
-                    </div>
-                    <span style={{width:'10px', height:'10px', borderRadius:'50%', background:'#D1D5DB', display:'block', flexShrink:0}}></span>
-                  </div>
-                ))}
+                  )
+                })}
 
+                {/* Últimos check-ins del día */}
+                {checkinsDehoy.length > 0 && (
+                  <>
+                    <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem', marginTop:'1.2rem'}}>Últimas respuestas</p>
+                    {checkinsDehoy.slice(0,5).map((c, i) => {
+                      const familiar = familiares.find(f => f.id === c.familiar_id)
+                      const cfg = ESTADO_CONFIG[c.estado] || ESTADO_CONFIG.pendiente
+                      return (
+                        <div key={i} style={{background:'white', borderRadius:'12px', padding:'0.9rem', marginBottom:'0.5rem', boxShadow:'0 2px 8px rgba(0,0,0,0.05)', display:'flex', gap:'0.75rem', alignItems:'flex-start', borderLeft:`3px solid ${cfg.color}`}}>
+                          <span style={{fontSize:'1.2rem'}}>{CATEGORIA_EMOJI[c.categoria] || '📋'}</span>
+                          <div style={{flex:1}}>
+                            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.15rem'}}>
+                              <span style={{fontSize:'0.82rem', fontWeight:'500'}}>{familiar?.nombre}</span>
+                              <EstadoBadge estado={c.estado} />
+                            </div>
+                            <p style={{fontSize:'0.78rem', color:'#6B7280', margin:0}}>{c.respuesta || c.resumen || '—'}</p>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </>
+                )}
+
+                {/* Leyenda */}
                 <div style={{background:'white', borderRadius:'12px', padding:'1rem', marginTop:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
                   <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>¿Qué significa cada color?</p>
                   <div style={{display:'flex', flexDirection:'column', gap:'0.5rem'}}>
-                    {[['#74C69D','Todo bien — respondió y está bien'],['#F4A261','Atención — respondió pero hay algo que revisar'],['#E76F51','Alerta — no respondió o necesita ayuda'],['#D1D5DB','Pendiente — el check-in aún no ha llegado']].map(([color, texto]) => (
-                      <div key={color} style={{display:'flex', alignItems:'center', gap:'0.6rem'}}>
-                        <span style={{width:'10px', height:'10px', borderRadius:'50%', background:color, display:'block', flexShrink:0}}></span>
-                        <span style={{fontSize:'0.82rem', color:'#6B7280'}}>{texto}</span>
+                    {Object.entries(ESTADO_CONFIG).map(([key, cfg]) => (
+                      <div key={key} style={{display:'flex', alignItems:'center', gap:'0.6rem'}}>
+                        <span style={{width:'10px', height:'10px', borderRadius:'50%', background:cfg.color, display:'block', flexShrink:0}}></span>
+                        <span style={{fontSize:'0.82rem', color:'#6B7280'}}>{cfg.emoji} {cfg.texto} — {
+                          key === 'verde' ? 'Respondió y está bien' :
+                          key === 'amarillo' ? 'Hay algo que revisar' :
+                          key === 'rojo' ? 'No respondió o necesita ayuda' :
+                          'El check-in aún no ha llegado'
+                        }</span>
                       </div>
                     ))}
                   </div>
@@ -145,6 +230,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* TAB: HISTORIAL */}
         {tab === 'historial' && (
           <div>
             <div style={{marginBottom:'1.1rem', marginTop:'0.5rem'}}>
@@ -166,22 +252,32 @@ export default function Dashboard() {
             ) : (
               checkins
                 .filter(c => filtroFamiliar === 'todos' || familiares.find(f => f.id === c.familiar_id)?.nombre === filtroFamiliar)
-                .map((c, i) => (
-                  <div key={i} style={{background:'white', borderRadius:'14px', padding:'1rem', marginBottom:'0.65rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', alignItems:'flex-start', gap:'0.8rem', borderLeft:`3px solid ${c.estado==='bien'?'#74C69D':c.estado==='atencion'?'#F4A261':'#E76F51'}`}}>
-                    <div style={{flex:1}}>
-                      <h4 style={{fontSize:'0.88rem', fontWeight:'500', marginBottom:'0.15rem'}}>{c.categoria}</h4>
-                      <p style={{fontSize:'0.8rem', color:'#6B7280', marginBottom:'0.25rem'}}>{c.respuesta}</p>
-                      <div style={{display:'flex', justifyContent:'space-between'}}>
-                        <span style={{fontSize:'0.72rem', color:'#9CA3AF'}}>{familiares.find(f => f.id === c.familiar_id)?.nombre}</span>
-                        <span style={{fontSize:'0.72rem', color:'#9CA3AF'}}>{new Date(c.creado_en).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+                .map((c, i) => {
+                  const familiar = familiares.find(f => f.id === c.familiar_id)
+                  const cfg = ESTADO_CONFIG[c.estado] || ESTADO_CONFIG.pendiente
+                  return (
+                    <div key={i} style={{background:'white', borderRadius:'14px', padding:'1rem', marginBottom:'0.65rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', alignItems:'flex-start', gap:'0.8rem', borderLeft:`3px solid ${cfg.color}`}}>
+                      <span style={{fontSize:'1.3rem', marginTop:'0.1rem'}}>{CATEGORIA_EMOJI[c.categoria] || '📋'}</span>
+                      <div style={{flex:1}}>
+                        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.2rem'}}>
+                          <h4 style={{fontSize:'0.88rem', fontWeight:'500', margin:0, textTransform:'capitalize'}}>{c.categoria}</h4>
+                          <EstadoBadge estado={c.estado} />
+                        </div>
+                        {c.respuesta && <p style={{fontSize:'0.8rem', color:'#4B5563', marginBottom:'0.25rem', margin:'0.2rem 0'}}>"{c.respuesta}"</p>}
+                        {c.resumen && <p style={{fontSize:'0.75rem', color:'#9CA3AF', margin:'0.15rem 0'}}>{c.resumen}</p>}
+                        <div style={{display:'flex', justifyContent:'space-between', marginTop:'0.3rem'}}>
+                          <span style={{fontSize:'0.72rem', color:'#9CA3AF'}}>{familiar?.nombre}</span>
+                          <span style={{fontSize:'0.72rem', color:'#9CA3AF'}}>{new Date(c.creado_en).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  )
+                })
             )}
           </div>
         )}
 
+        {/* TAB: FAMILIA */}
         {tab === 'familia' && (
           <div>
             <div style={{marginBottom:'1.1rem', marginTop:'0.5rem'}}>
@@ -195,16 +291,19 @@ export default function Dashboard() {
                     {f.nombre.charAt(0).toUpperCase()}
                   </div>
                   <div style={{flex:1}}>
-                    <h4 style={{fontSize:'0.95rem', fontWeight:'500', marginBottom:'0.15rem'}}>{f.nombre}</h4>
-                    <p style={{fontSize:'0.8rem', color:'#6B7280'}}>{f.relacion} · {f.ciudad || ''}</p>
-                    <p style={{fontSize:'0.78rem', color:'#6B7280'}}>📱 {f.whatsapp}</p>
+                    <div style={{display:'flex', alignItems:'center', gap:'0.5rem', marginBottom:'0.15rem'}}>
+                      <h4 style={{fontSize:'0.95rem', fontWeight:'500', margin:0}}>{f.nombre}</h4>
+                      <EstadoBadge estado={estadoFamiliar(f.id)} />
+                    </div>
+                    <p style={{fontSize:'0.8rem', color:'#6B7280', margin:0}}>{f.relacion} · {f.ciudad || ''}</p>
+                    <p style={{fontSize:'0.78rem', color:'#6B7280', margin:0}}>📱 {f.whatsapp}</p>
                   </div>
                 </div>
                 {f.configuraciones?.[0] && (
                   <div style={{background:'#F8F7F4', borderRadius:'12px', padding:'0.85rem', marginBottom:'1rem'}}>
                     <div style={{display:'flex', flexWrap:'wrap', gap:'0.4rem', marginBottom:'0.5rem'}}>
                       {f.configuraciones[0].categorias?.map(c => (
-                        <span key={c} style={{background:'#D8F3DC', color:'#2D6A4F', padding:'0.2rem 0.6rem', borderRadius:'20px', fontSize:'0.75rem'}}>{c}</span>
+                        <span key={c} style={{background:'#D8F3DC', color:'#2D6A4F', padding:'0.2rem 0.6rem', borderRadius:'20px', fontSize:'0.75rem'}}>{CATEGORIA_EMOJI[c] || ''} {c}</span>
                       ))}
                     </div>
                     <div style={{display:'flex', gap:'0.3rem'}}>
@@ -227,6 +326,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* TAB: CONFIG */}
         {tab === 'config' && (
           <div>
             <div style={{marginBottom:'1.1rem', marginTop:'0.5rem'}}>
@@ -253,6 +353,7 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* Nav bottom */}
       <div style={{background:'white', padding:'0.75rem 1.5rem', display:'flex', justifyContent:'space-around', boxShadow:'0 -2px 16px rgba(0,0,0,0.06)', position:'fixed', bottom:0, width:'100%', maxWidth:'600px', left:'50%', transform:'translateX(-50%)'}}>
         {[['inicio','🏠','Inicio'],['historial','📊','Historial'],['familia','👥','Familia'],['config','⚙️','Config']].map(([t, icono, label]) => (
           <button key={t} onClick={() => setTab(t)} style={estiloNav(t)}>
