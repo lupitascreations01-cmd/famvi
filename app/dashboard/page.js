@@ -1,59 +1,94 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
 
 export default function Dashboard() {
   const [tab, setTab] = useState('inicio')
+  const [usuario, setUsuario] = useState(null)
+  const [familiares, setFamiliares] = useState([])
+  const [checkins, setCheckins] = useState([])
+  const [cargando, setCargando] = useState(true)
   const [filtroFamiliar, setFiltroFamiliar] = useState('todos')
 
-  const familiares = [
-    {id:1, nombre:'María García', relacion:'Mamá', ciudad:'Ciudad de México', estado:'verde', ultima:'hace 2h', checkins:3, avatar:'M', color:'#2D6A4F'},
-    {id:2, nombre:'Armando García', relacion:'Papá', ciudad:'Guadalajara', estado:'amarillo', ultima:'hace 5h', checkins:1, avatar:'A', color:'#6B4226'},
-    {id:3, nombre:'Rosa Pérez', relacion:'Abuela', ciudad:'Monterrey', estado:'rojo', ultima:'ayer', checkins:0, avatar:'R', color:'#5B4E7E'},
-  ]
+  const colores = ['#2D6A4F','#6B4226','#5B4E7E','#1A5276','#784212','#1B4F72']
 
-  const historial = [
-    {familiar:'María García', tipo:'💊', titulo:'Medicinas tomadas', desc:'Confirmó medicina de la mañana.', hora:'Hoy, 8:14 AM', color:'#74C69D'},
-    {familiar:'María García', tipo:'😊', titulo:'Ánimo regular', desc:'Se siente "más o menos". Considera llamarla.', hora:'Hoy, 1:02 PM', color:'#F4A261'},
-    {familiar:'María García', tipo:'🍽️', titulo:'Almorzó bien', desc:'Respondió que comió sopa de pollo y fruta.', hora:'Hoy, 1:05 PM', color:'#74C69D'},
-    {familiar:'Armando García', tipo:'💊', titulo:'Medicinas tomadas', desc:'Confirmó medicina de la mañana.', hora:'Hoy, 8:30 AM', color:'#74C69D'},
-    {familiar:'Armando García', tipo:'🍽️', titulo:'Sin respuesta', desc:'No respondió el check-in del mediodía.', hora:'Hoy, 1:00 PM', color:'#E76F51'},
-    {familiar:'Rosa Pérez', tipo:'⚠️', titulo:'Sin respuesta', desc:'No respondió ningún check-in de hoy.', hora:'Hoy, 8:00 AM', color:'#E76F51'},
-    {familiar:'María García', tipo:'💊', titulo:'Medicinas tomadas', desc:'Confirmó medicina de la mañana.', hora:'Ayer, 8:09 AM', color:'#74C69D'},
-    {familiar:'María García', tipo:'😊', titulo:'Ánimo excelente', desc:'Dice que se siente muy bien hoy.', hora:'Ayer, 1:15 PM', color:'#74C69D'},
-    {familiar:'Armando García', tipo:'🚶', titulo:'Caminó 20 minutos', desc:'Salió a caminar por el parque.', hora:'Ayer, 5:10 PM', color:'#74C69D'},
-  ]
+  useEffect(() => {
+    const cargarDatos = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { window.location.href = '/login'; return }
+      setUsuario(user)
 
-  const historialFiltrado = filtroFamiliar === 'todos' ? historial : historial.filter(h => h.familiar === filtroFamiliar)
+      const { data: familiaresData } = await supabase
+        .from('familiares')
+        .select('*, configuraciones(*)')
+        .eq('usuario_id', user.id)
+        .eq('activo', true)
+
+      if (familiaresData) setFamiliares(familiaresData)
+
+      if (familiaresData && familiaresData.length > 0) {
+        const ids = familiaresData.map(f => f.id)
+        const { data: checkinsData } = await supabase
+          .from('checkins')
+          .select('*')
+          .in('familiar_id', ids)
+          .order('creado_en', { ascending: false })
+          .limit(20)
+        if (checkinsData) setCheckins(checkinsData)
+      }
+
+      setCargando(false)
+    }
+    cargarDatos()
+  }, [])
+
+  const cerrarSesion = async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/'
+  }
 
   const estiloNav = (t) => ({
     display:'flex', flexDirection:'column', alignItems:'center', gap:'0.15rem',
     cursor:'pointer', color: tab===t ? '#2D6A4F' : '#6B7280',
-    fontSize:'0.68rem', fontWeight:'500', transition:'color 0.2s', border:'none',
+    fontSize:'0.68rem', fontWeight:'500', border:'none',
     background:'none', padding:'0.5rem'
   })
 
-  const estiloSemaforo = (estado) => ({
-    width:'12px', height:'12px', borderRadius:'50%',
-    background: estado==='verde'?'#74C69D': estado==='amarillo'?'#F4A261':'#E76F51',
-    flexShrink:0
-  })
+  if (cargando) return (
+    <main style={{minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#F8F7F4', fontFamily:'sans-serif'}}>
+      <div style={{textAlign:'center'}}>
+        <div style={{fontSize:'2rem', marginBottom:'1rem'}}>⏳</div>
+        <p style={{color:'#6B7280'}}>Cargando tu dashboard...</p>
+      </div>
+    </main>
+  )
+
+  const nombreUsuario = usuario?.user_metadata?.full_name?.split(' ')[0] || usuario?.email?.split('@')[0] || 'tú'
 
   return (
     <main style={{minHeight:'100vh', background:'#F8F7F4', fontFamily:'sans-serif', paddingBottom:'70px'}}>
 
-      {/* TOPBAR */}
       <div style={{background:'white', padding:'1rem 1.5rem', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', position:'sticky', top:0, zIndex:10}}>
         <span style={{fontSize:'1.4rem', color:'#2D6A4F', fontWeight:'300'}}>fam<span style={{color:'#74C69D'}}>vi</span></span>
-        <div style={{display:'flex', alignItems:'center', gap:'0.5rem', background:'#D8F3DC', padding:'0.35rem 0.85rem', borderRadius:'20px'}}>
-          <div style={{width:'26px', height:'26px', background:'#2D6A4F', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'0.7rem', fontWeight:'600'}}>A</div>
-          <span style={{fontSize:'0.82rem', fontWeight:'500', color:'#2D6A4F'}}>Ana</span>
+        <div style={{display:'flex', alignItems:'center', gap:'0.75rem'}}>
+          <div style={{display:'flex', alignItems:'center', gap:'0.5rem', background:'#D8F3DC', padding:'0.35rem 0.85rem', borderRadius:'20px'}}>
+            <div style={{width:'26px', height:'26px', background:'#2D6A4F', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'0.7rem', fontWeight:'600'}}>
+              {nombreUsuario.charAt(0).toUpperCase()}
+            </div>
+            <span style={{fontSize:'0.82rem', fontWeight:'500', color:'#2D6A4F'}}>{nombreUsuario}</span>
+          </div>
+          <button onClick={cerrarSesion} style={{background:'none', border:'none', color:'#9CA3AF', fontSize:'0.8rem', cursor:'pointer'}}>Salir</button>
         </div>
       </div>
 
       <div style={{padding:'1.4rem', maxWidth:'600px', margin:'0 auto'}}>
 
-        {/* TAB INICIO */}
         {tab === 'inicio' && (
           <div>
             <div style={{marginBottom:'1.1rem', marginTop:'0.5rem'}}>
@@ -61,53 +96,60 @@ export default function Dashboard() {
               <p style={{color:'#6B7280', fontSize:'0.82rem'}}>{new Date().toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
             </div>
 
-            {/* Resumen general */}
-            <div style={{background:'white', borderRadius:'20px', padding:'1.4rem', marginBottom:'1.2rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', gap:'1rem', alignItems:'center'}}>
-              <div style={{width:'56px', height:'56px', borderRadius:'50%', background:'#FEF3C7', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.6rem', flexShrink:0}}>⚠️</div>
-              <div>
-                <h3 style={{fontSize:'0.95rem', fontWeight:'500', marginBottom:'0.2rem'}}>Hay 2 alertas hoy</h3>
-                <p style={{fontSize:'0.82rem', color:'#6B7280'}}>Rosa no respondió ningún check-in. Armando no respondió el del mediodía.</p>
+            {familiares.length === 0 ? (
+              <div style={{background:'white', borderRadius:'20px', padding:'2rem', textAlign:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
+                <div style={{fontSize:'2rem', marginBottom:'1rem'}}>👨‍👩‍👧</div>
+                <h3 style={{fontSize:'1rem', fontWeight:'500', marginBottom:'0.5rem'}}>Aún no tienes familiares configurados</h3>
+                <p style={{color:'#6B7280', fontSize:'0.85rem', marginBottom:'1.5rem'}}>Agrega a tu primer familiar para comenzar.</p>
+                <button onClick={() => window.location.href='/onboarding'} style={{padding:'0.9rem 2rem', background:'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'0.95rem', fontWeight:'500', cursor:'pointer'}}>
+                  Agregar familiar →
+                </button>
               </div>
-            </div>
-
-            {/* Familiares resumen */}
-            <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Estado de tus familiares</p>
-            {familiares.map(f => (
-              <div key={f.id} style={{background:'white', borderRadius:'16px', padding:'1.1rem', marginBottom:'0.75rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', alignItems:'center', gap:'1rem'}}>
-                <div style={{width:'42px', height:'42px', borderRadius:'50%', background:f.color, display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'1rem', fontWeight:'600', flexShrink:0}}>{f.avatar}</div>
-                <div style={{flex:1}}>
-                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.2rem'}}>
-                    <h4 style={{fontSize:'0.9rem', fontWeight:'500'}}>{f.nombre}</h4>
-                    <span style={estiloSemaforo(f.estado)}></span>
+            ) : (
+              <>
+                <div style={{background:'white', borderRadius:'20px', padding:'1.4rem', marginBottom:'1.2rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', gap:'1rem', alignItems:'center'}}>
+                  <div style={{width:'56px', height:'56px', borderRadius:'50%', background:'#F3F4F6', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.6rem', flexShrink:0}}>⏳</div>
+                  <div>
+                    <h3 style={{fontSize:'0.95rem', fontWeight:'500', marginBottom:'0.2rem'}}>Esperando respuestas</h3>
+                    <p style={{fontSize:'0.82rem', color:'#6B7280'}}>Los check-ins comenzarán según el horario configurado.</p>
                   </div>
-                  <p style={{fontSize:'0.78rem', color:'#6B7280'}}>{f.relacion} · {f.checkins} check-in{f.checkins!==1?'s':''} hoy · {f.ultima}</p>
                 </div>
-              </div>
-            ))}
 
-            {/* Simbología */}
-            <div style={{background:'white', borderRadius:'12px', padding:'1rem', marginBottom:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
-              <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>¿Qué significa cada color?</p>
-              <div style={{display:'flex', flexDirection:'column', gap:'0.5rem'}}>
-                {[['#74C69D','Todo bien — respondió y está bien'],['#F4A261','Atención — respondió pero hay algo que revisar'],['#E76F51','Alerta — no respondió o necesita ayuda'],['#D1D5DB','Pendiente — el check-in aún no ha llegado']].map(([color, texto]) => (
-                  <div key={color} style={{display:'flex', alignItems:'center', gap:'0.6rem'}}>
-                    <span style={{width:'10px', height:'10px', borderRadius:'50%', background:color, display:'block', flexShrink:0}}></span>
-                    <span style={{fontSize:'0.82rem', color:'#6B7280'}}>{texto}</span>
+                <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Tus familiares</p>
+                {familiares.map((f, i) => (
+                  <div key={f.id} style={{background:'white', borderRadius:'16px', padding:'1.1rem', marginBottom:'0.75rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', alignItems:'center', gap:'1rem'}}>
+                    <div style={{width:'42px', height:'42px', borderRadius:'50%', background:colores[i % colores.length], display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'1rem', fontWeight:'600', flexShrink:0}}>
+                      {f.nombre.charAt(0).toUpperCase()}
+                    </div>
+                    <div style={{flex:1}}>
+                      <h4 style={{fontSize:'0.9rem', fontWeight:'500', marginBottom:'0.2rem'}}>{f.nombre}</h4>
+                      <p style={{fontSize:'0.78rem', color:'#6B7280'}}>{f.relacion} · {f.ciudad || ''} · {f.whatsapp}</p>
+                    </div>
+                    <span style={{width:'10px', height:'10px', borderRadius:'50%', background:'#D1D5DB', display:'block', flexShrink:0}}></span>
                   </div>
                 ))}
-              </div>
-            </div>
+
+                <div style={{background:'white', borderRadius:'12px', padding:'1rem', marginTop:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
+                  <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>¿Qué significa cada color?</p>
+                  <div style={{display:'flex', flexDirection:'column', gap:'0.5rem'}}>
+                    {[['#74C69D','Todo bien — respondió y está bien'],['#F4A261','Atención — respondió pero hay algo que revisar'],['#E76F51','Alerta — no respondió o necesita ayuda'],['#D1D5DB','Pendiente — el check-in aún no ha llegado']].map(([color, texto]) => (
+                      <div key={color} style={{display:'flex', alignItems:'center', gap:'0.6rem'}}>
+                        <span style={{width:'10px', height:'10px', borderRadius:'50%', background:color, display:'block', flexShrink:0}}></span>
+                        <span style={{fontSize:'0.82rem', color:'#6B7280'}}>{texto}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
 
-        {/* TAB HISTORIAL */}
         {tab === 'historial' && (
           <div>
             <div style={{marginBottom:'1.1rem', marginTop:'0.5rem'}}>
               <h2 style={{fontSize:'1.35rem', fontWeight:'400', marginBottom:'0.2rem'}}>Historial</h2>
-              <p style={{color:'#6B7280', fontSize:'0.82rem', marginBottom:'1rem'}}>Registro completo de check-ins</p>
-
-              {/* Filtro por familiar */}
+              <p style={{color:'#6B7280', fontSize:'0.82rem', marginBottom:'1rem'}}>Registro de check-ins</p>
               <div style={{display:'flex', gap:'0.5rem', overflowX:'auto', paddingBottom:'0.5rem'}}>
                 {['todos', ...familiares.map(f => f.nombre)].map(opcion => (
                   <button key={opcion} onClick={() => setFiltroFamiliar(opcion)} style={{padding:'0.4rem 0.9rem', borderRadius:'20px', border:`1.5px solid ${filtroFamiliar===opcion?'#2D6A4F':'#E5E7EB'}`, background:filtroFamiliar===opcion?'#D8F3DC':'white', color:filtroFamiliar===opcion?'#2D6A4F':'#6B7280', fontSize:'0.8rem', fontWeight:'500', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0}}>
@@ -116,138 +158,101 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-
-            {historialFiltrado.map((h, i) => (
-              <div key={i} style={{background:'white', borderRadius:'14px', padding:'1rem', marginBottom:'0.65rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', alignItems:'flex-start', gap:'0.8rem', borderLeft:`3px solid ${h.color}`}}>
-                <span style={{fontSize:'1.1rem', flexShrink:0, marginTop:'0.1rem'}}>{h.tipo}</span>
-                <div style={{flex:1}}>
-                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'0.15rem'}}>
-                    <h4 style={{fontSize:'0.88rem', fontWeight:'500'}}>{h.titulo}</h4>
-                  </div>
-                  <p style={{fontSize:'0.8rem', color:'#6B7280', marginBottom:'0.25rem'}}>{h.desc}</p>
-                  <div style={{display:'flex', justifyContent:'space-between'}}>
-                    <span style={{fontSize:'0.72rem', color:'#9CA3AF'}}>{h.familiar}</span>
-                    <span style={{fontSize:'0.72rem', color:'#9CA3AF'}}>{h.hora}</span>
-                  </div>
-                </div>
+            {checkins.length === 0 ? (
+              <div style={{background:'white', borderRadius:'16px', padding:'2rem', textAlign:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
+                <p style={{fontSize:'2rem', marginBottom:'0.75rem'}}>📭</p>
+                <p style={{color:'#6B7280', fontSize:'0.88rem'}}>Aún no hay check-ins. Aparecerán cuando tu familiar responda los mensajes.</p>
               </div>
-            ))}
+            ) : (
+              checkins
+                .filter(c => filtroFamiliar === 'todos' || familiares.find(f => f.id === c.familiar_id)?.nombre === filtroFamiliar)
+                .map((c, i) => (
+                  <div key={i} style={{background:'white', borderRadius:'14px', padding:'1rem', marginBottom:'0.65rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', display:'flex', alignItems:'flex-start', gap:'0.8rem', borderLeft:`3px solid ${c.estado==='bien'?'#74C69D':c.estado==='atencion'?'#F4A261':'#E76F51'}`}}>
+                    <div style={{flex:1}}>
+                      <h4 style={{fontSize:'0.88rem', fontWeight:'500', marginBottom:'0.15rem'}}>{c.categoria}</h4>
+                      <p style={{fontSize:'0.8rem', color:'#6B7280', marginBottom:'0.25rem'}}>{c.respuesta}</p>
+                      <div style={{display:'flex', justifyContent:'space-between'}}>
+                        <span style={{fontSize:'0.72rem', color:'#9CA3AF'}}>{familiares.find(f => f.id === c.familiar_id)?.nombre}</span>
+                        <span style={{fontSize:'0.72rem', color:'#9CA3AF'}}>{new Date(c.creado_en).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+            )}
           </div>
         )}
 
-        {/* TAB FAMILIA */}
         {tab === 'familia' && (
           <div>
             <div style={{marginBottom:'1.1rem', marginTop:'0.5rem'}}>
               <h2 style={{fontSize:'1.35rem', fontWeight:'400', marginBottom:'0.2rem'}}>Mi familia</h2>
               <p style={{color:'#6B7280', fontSize:'0.82rem', marginBottom:'1.2rem'}}>Familiares que reciben check-ins</p>
             </div>
-
-            {familiares.map(f => (
+            {familiares.map((f, i) => (
               <div key={f.id} style={{background:'white', borderRadius:'18px', padding:'1.3rem', marginBottom:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
                 <div style={{display:'flex', alignItems:'center', gap:'1rem', marginBottom:'1rem'}}>
-                  <div style={{width:'48px', height:'48px', borderRadius:'50%', background:f.color, display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'1.2rem', fontWeight:'600', flexShrink:0}}>{f.avatar}</div>
+                  <div style={{width:'48px', height:'48px', borderRadius:'50%', background:colores[i % colores.length], display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'1.2rem', fontWeight:'600', flexShrink:0}}>
+                    {f.nombre.charAt(0).toUpperCase()}
+                  </div>
                   <div style={{flex:1}}>
-                    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                      <h4 style={{fontSize:'0.95rem', fontWeight:'500'}}>{f.nombre}</h4>
-                      <span style={estiloSemaforo(f.estado)}></span>
-                    </div>
-                    <p style={{fontSize:'0.8rem', color:'#6B7280'}}>{f.relacion} · {f.ciudad}</p>
+                    <h4 style={{fontSize:'0.95rem', fontWeight:'500', marginBottom:'0.15rem'}}>{f.nombre}</h4>
+                    <p style={{fontSize:'0.8rem', color:'#6B7280'}}>{f.relacion} · {f.ciudad || ''}</p>
+                    <p style={{fontSize:'0.78rem', color:'#6B7280'}}>📱 {f.whatsapp}</p>
                   </div>
                 </div>
-                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'0.5rem', marginBottom:'1rem'}}>
-                  {[['Check-ins hoy', f.checkins], ['Última respuesta', f.ultima], ['Estado', f.estado==='verde'?'✅ Bien':f.estado==='amarillo'?'⚠️ Atención':'🔴 Alerta']].map(([label, val]) => (
-                    <div key={label} style={{background:'#F8F7F4', borderRadius:'10px', padding:'0.6rem', textAlign:'center'}}>
-                      <p style={{fontSize:'0.68rem', color:'#9CA3AF', marginBottom:'0.2rem'}}>{label}</p>
-                      <p style={{fontSize:'0.82rem', fontWeight:'500', color:'#1A1A2E'}}>{val}</p>
+                {f.configuraciones?.[0] && (
+                  <div style={{background:'#F8F7F4', borderRadius:'12px', padding:'0.85rem', marginBottom:'1rem'}}>
+                    <div style={{display:'flex', flexWrap:'wrap', gap:'0.4rem', marginBottom:'0.5rem'}}>
+                      {f.configuraciones[0].categorias?.map(c => (
+                        <span key={c} style={{background:'#D8F3DC', color:'#2D6A4F', padding:'0.2rem 0.6rem', borderRadius:'20px', fontSize:'0.75rem'}}>{c}</span>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div style={{display:'flex', gap:'0.5rem'}}>
-                  <button style={{flex:1, padding:'0.7rem', background:'#25D366', color:'white', border:'none', borderRadius:'10px', fontSize:'0.82rem', fontWeight:'500', cursor:'pointer'}}>💬 WhatsApp</button>
-                  <button style={{flex:1, padding:'0.7rem', background:'#F8F7F4', color:'#6B7280', border:'1.5px solid #E5E7EB', borderRadius:'10px', fontSize:'0.82rem', fontWeight:'500', cursor:'pointer'}}>⚙️ Configurar</button>
-                </div>
+                    <div style={{display:'flex', gap:'0.3rem'}}>
+                      {['L','M','X','J','V','S','D'].map(d => (
+                        <div key={d} style={{width:'24px', height:'24px', borderRadius:'6px', background:f.configuraciones[0].dias?.includes(d)?'#D8F3DC':'#E5E7EB', color:f.configuraciones[0].dias?.includes(d)?'#2D6A4F':'#9CA3AF', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.68rem', fontWeight:'600'}}>
+                          {d}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <button onClick={() => window.open(`https://wa.me/${f.whatsapp.replace(/\D/g,'')}`, '_blank')} style={{width:'100%', padding:'0.7rem', background:'#25D366', color:'white', border:'none', borderRadius:'10px', fontSize:'0.82rem', fontWeight:'500', cursor:'pointer'}}>
+                  💬 Enviar WhatsApp
+                </button>
               </div>
             ))}
-
-            <button style={{width:'100%', padding:'1rem', background:'transparent', border:'2px dashed #D1D5DB', borderRadius:'16px', color:'#6B7280', fontSize:'0.9rem', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'0.5rem'}}>
+            <button onClick={() => window.location.href='/onboarding'} style={{width:'100%', padding:'1rem', background:'transparent', border:'2px dashed #D1D5DB', borderRadius:'16px', color:'#6B7280', fontSize:'0.9rem', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'0.5rem'}}>
               + Agregar familiar
             </button>
           </div>
         )}
 
-        {/* TAB CONFIGURACIÓN */}
         {tab === 'config' && (
           <div>
             <div style={{marginBottom:'1.1rem', marginTop:'0.5rem'}}>
               <h2 style={{fontSize:'1.35rem', fontWeight:'400', marginBottom:'0.2rem'}}>Configuración</h2>
-              <p style={{color:'#6B7280', fontSize:'0.82rem', marginBottom:'1.2rem'}}>Ajusta los check-ins de tus familiares</p>
+              <p style={{color:'#6B7280', fontSize:'0.82rem', marginBottom:'1.2rem'}}>Tu cuenta y preferencias</p>
             </div>
-
-            {/* Plan actual */}
-            <div style={{background:'#2D6A4F', borderRadius:'16px', padding:'1.2rem', marginBottom:'1.2rem', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+            <div style={{background:'white', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
+              <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Tu cuenta</p>
+              <p style={{fontSize:'0.88rem', color:'#1A1A2E', marginBottom:'0.3rem'}}>📧 {usuario?.email}</p>
+              <p style={{fontSize:'0.82rem', color:'#6B7280'}}>Plan: Trial (7 días gratis)</p>
+            </div>
+            <div style={{background:'#2D6A4F', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
               <div>
-                <p style={{fontSize:'0.75rem', color:'rgba(255,255,255,0.6)', marginBottom:'0.2rem', textTransform:'uppercase', letterSpacing:'0.5px'}}>Tu plan actual</p>
-                <h3 style={{fontSize:'1.1rem', fontWeight:'600', color:'white', marginBottom:'0.2rem'}}>Plan Familiar</h3>
-                <p style={{fontSize:'0.82rem', color:'rgba(255,255,255,0.7)'}}>hasta 3 familiares · $17.99/mes</p>
+                <p style={{fontSize:'0.75rem', color:'rgba(255,255,255,0.6)', marginBottom:'0.2rem', textTransform:'uppercase', letterSpacing:'0.5px'}}>Actualiza tu plan</p>
+                <h3 style={{fontSize:'1rem', fontWeight:'600', color:'white', marginBottom:'0.2rem'}}>Elige el plan ideal</h3>
+                <p style={{fontSize:'0.82rem', color:'rgba(255,255,255,0.7)'}}>Desde $9.99/mes</p>
               </div>
-              <button style={{background:'#74C69D', color:'#1A1A2E', border:'none', borderRadius:'10px', padding:'0.6rem 1rem', fontSize:'0.82rem', fontWeight:'600', cursor:'pointer'}}>Cambiar</button>
+              <button onClick={() => window.location.href='/precios'} style={{background:'#74C69D', color:'#1A1A2E', border:'none', borderRadius:'10px', padding:'0.6rem 1rem', fontSize:'0.82rem', fontWeight:'600', cursor:'pointer'}}>Ver planes</button>
             </div>
-
-            {/* Selector de familiar */}
-            <div style={{background:'white', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
-              <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Configurar familiar</p>
-              <select style={{width:'100%', padding:'0.8rem', border:'1.5px solid #E5E7EB', borderRadius:'12px', fontSize:'0.95rem', color:'#1A1A2E', background:'#F8F7F4'}}>
-                {familiares.map(f => <option key={f.id}>{f.nombre} — {f.relacion}</option>)}
-              </select>
-            </div>
-
-            {/* Días */}
-            <div style={{background:'white', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
-              <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Días de envío</p>
-              <div style={{display:'flex', gap:'0.4rem', justifyContent:'space-between'}}>
-                {['L','M','X','J','V','S','D'].map((dia, i) => (
-                  <div key={dia} style={{flex:1, aspectRatio:'1', border:`1.5px solid ${i<5?'#2D6A4F':'#E5E7EB'}`, borderRadius:'10px', background:i<5?'#D8F3DC':'#F8F7F4', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.78rem', fontWeight:'600', color:i<5?'#2D6A4F':'#6B7280', cursor:'pointer'}}>
-                    {dia}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Horarios */}
-            <div style={{background:'white', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
-              <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Horarios de check-in</p>
-              {[['🌅','Mañana','8:00 AM', true],['☀️','Mediodía','1:00 PM', true],['🌆','Tarde','5:00 PM', true],['🌙','Noche','9:00 PM', false]].map(([icono, nombre, hora, activo]) => (
-                <div key={nombre} style={{display:'flex', alignItems:'center', gap:'0.75rem', padding:'0.75rem 0', borderBottom:'1px solid #F3F4F6'}}>
-                  <span style={{fontSize:'1rem'}}>{icono}</span>
-                  <span style={{flex:1, fontSize:'0.88rem'}}>{nombre}</span>
-                  <span style={{fontSize:'0.85rem', color:'#2D6A4F', fontWeight:'500'}}>{hora}</span>
-                  <div style={{width:'36px', height:'20px', borderRadius:'10px', background:activo?'#2D6A4F':'#D1D5DB', position:'relative', cursor:'pointer'}}>
-                    <div style={{width:'16px', height:'16px', borderRadius:'50%', background:'white', position:'absolute', top:'2px', left:activo?'18px':'2px', transition:'left 0.2s'}}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Categorías */}
-            <div style={{background:'white', borderRadius:'16px', padding:'1.2rem', marginBottom:'1.5rem', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
-              <p style={{fontSize:'0.75rem', fontWeight:'500', color:'#6B7280', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.75rem'}}>Áreas monitoreadas</p>
-              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.6rem'}}>
-                {[['💊','Medicinas',true],['🍽️','Alimentación',true],['😊','Estado de ánimo',true],['🚶','Movilidad',true],['😴','Sueño',false],['💧','Hidratación',false]].map(([icono, nombre, activo]) => (
-                  <div key={nombre} style={{border:`1.5px solid ${activo?'#2D6A4F':'#E5E7EB'}`, borderRadius:'12px', padding:'0.8rem', background:activo?'#D8F3DC':'#F8F7F4', display:'flex', alignItems:'center', gap:'0.5rem', cursor:'pointer'}}>
-                    <span style={{fontSize:'1.1rem'}}>{icono}</span>
-                    <span style={{fontSize:'0.83rem', fontWeight:'500', color:activo?'#1A1A2E':'#6B7280'}}>{nombre}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button style={{width:'100%', padding:'1rem', background:'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'0.95rem', fontWeight:'500', cursor:'pointer'}}>Guardar cambios ✓</button>
+            <button onClick={cerrarSesion} style={{width:'100%', padding:'1rem', background:'white', color:'#E76F51', border:'1.5px solid #E76F51', borderRadius:'12px', fontSize:'0.95rem', fontWeight:'500', cursor:'pointer', boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
+              Cerrar sesión
+            </button>
           </div>
         )}
       </div>
 
-      {/* NAV BOTTOM */}
       <div style={{background:'white', padding:'0.75rem 1.5rem', display:'flex', justifyContent:'space-around', boxShadow:'0 -2px 16px rgba(0,0,0,0.06)', position:'fixed', bottom:0, width:'100%', maxWidth:'600px', left:'50%', transform:'translateX(-50%)'}}>
         {[['inicio','🏠','Inicio'],['historial','📊','Historial'],['familia','👥','Familia'],['config','⚙️','Config']].map(([t, icono, label]) => (
           <button key={t} onClick={() => setTab(t)} style={estiloNav(t)}>
