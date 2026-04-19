@@ -197,7 +197,7 @@ export default function Home() {
             <span style={{fontSize:'1.2rem'}}>💬</span>
             <p style={{fontSize:'0.82rem',color:'#2D6A4F',lineHeight:'1.5',margin:0}}>En unos minutos tu familiar recibirá su primer mensaje de Famvi en WhatsApp.</p>
           </div>
-          <button onClick={() => setPantalla('dashboard')} style={{width:'100%',padding:'1rem',background:'#2D6A4F',color:'white',border:'none',borderRadius:'12px',fontSize:'1rem',fontWeight:'500',cursor:'pointer'}}>Ver mi dashboard →</button>
+          <button onClick={() => window.location.href='/dashboard'} style={{width:'100%',padding:'1rem',background:'#2D6A4F',color:'white',border:'none',borderRadius:'12px',fontSize:'1rem',fontWeight:'500',cursor:'pointer'}}>Ver mi dashboard →</button>
           <button onClick={() => setPantalla('configuracion')} style={{width:'100%',padding:'0.75rem',background:'none',border:'none',color:'#6B7280',fontSize:'0.85rem',cursor:'pointer',marginTop:'0.5rem'}}>← Volver</button>
         </div>
       </main>
@@ -354,7 +354,7 @@ export default function Home() {
       <p style={{color:'rgba(255,255,255,0.75)',fontSize:'1.05rem',fontStyle:'italic',marginBottom:'2.5rem'}}>para los que cuidan desde lejos</p>
       <div style={{display:'flex',flexDirection:'column',gap:'0.75rem',width:'100%',maxWidth:'320px'}}>
         <button onClick={() => setPantalla('login')} style={{width:'100%',padding:'1rem',background:'#74C69D',color:'#1A1A2E',border:'2px solid #74C69D',borderRadius:'50px',fontSize:'0.95rem',fontWeight:'600',cursor:'pointer'}}>Comenzar prueba gratis — 7 días →</button>
-        <button onClick={() => setPantalla('precios')} style={{width:'100%',padding:'1rem',background:'transparent',color:'#ffffff',border:'2px solid #ffffff',borderRadius:'50px',fontSize:'1rem',fontWeight:'500',cursor:'pointer'}}>Ver planes y precios</button>
+        <button  style={{width:'100%',padding:'1rem',background:'transparent',color:'#ffffff',border:'2px solid #ffffff',borderRadius:'50px',fontSize:'1rem',fontWeight:'500',cursor:'pointer'}}>Ver planes y precios</button>
         <button onClick={() => setPantalla('como-funciona')} style={{width:'100%',padding:'0.75rem',background:'transparent',color:'rgba(255,255,255,0.7)',border:'none',fontSize:'0.88rem',cursor:'pointer'}}>Ver cómo funciona ↓</button>
         <button onClick={() => setPantalla('login')} style={{width:'100%',padding:'0.5rem',background:'transparent',color:'rgba(255,255,255,0.5)',border:'none',fontSize:'0.85rem',cursor:'pointer'}}>Ya tengo cuenta →</button>
       </div>
