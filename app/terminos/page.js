@@ -1,3 +1,4 @@
+'use client'
 export default function Terminos() {
   return (
     <main style={{ minHeight: '100vh', background: '#F8F7F4', fontFamily: 'sans-serif', padding: '2rem' }}>
