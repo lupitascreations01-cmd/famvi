@@ -30,6 +30,7 @@ export default function Terminos() {
           </div>
         ))}
 
+
       </div>
     </main>
   )
