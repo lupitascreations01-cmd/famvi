@@ -160,12 +160,42 @@ export default function Onboarding() {
     }
   }
 
-  const irPaso3 = () => {
+  const irPaso3 = async () => {
     if (!nombreFamiliar.trim()) { setError('Por favor ingresa el nombre de tu familiar'); return }
     if (!relacion) { setError('Por favor selecciona la relación'); return }
     if (!validarWhatsapp(whatsappFamiliar)) { setError('El número de WhatsApp no es válido. Incluye el código de país sin espacios, ej: +56972669589'); return }
     setError('')
-    setPaso(3)
+
+    // Verificar límite del plan
+    setCargando(true)
+    try {
+      const { data: usuarioData } = await supabase
+        .from('usuarios')
+        .select('plan_limite, plan_estado')
+        .eq('id', usuario.id)
+        .single()
+
+      const limite = usuarioData?.plan_limite ?? 1
+      const estado = usuarioData?.plan_estado ?? 'trial'
+
+      const { count } = await supabase
+        .from('familiares')
+        .select('id', { count: 'exact' })
+        .eq('usuario_id', usuario.id)
+        .eq('activo', true)
+
+      if (count >= limite && estado !== 'trial') {
+        setError(`Tu plan permite máximo ${limite} familiar${limite > 1 ? 'es' : ''}. Actualiza tu plan para agregar más.`)
+        setCargando(false)
+        return
+      }
+
+      setPaso(3)
+    } catch {
+      setPaso(3) // Si falla la verificación, dejar pasar
+    } finally {
+      setCargando(false)
+    }
   }
 
   const finalizar = async () => {
