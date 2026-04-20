@@ -339,7 +339,7 @@ export default function Home() {
           </p>
 
           <p style={{textAlign:'center',fontSize:'0.75rem',color:'#9CA3AF',lineHeight:'1.5'}}>
-            Al crear tu cuenta aceptas nuestros <span style={{color:'#2D6A4F',cursor:'pointer'}}>Términos de uso</span> y <span style={{color:'#2D6A4F',cursor:'pointer'}}>Política de privacidad</span>
+            Al crear tu cuenta aceptas nuestros <a href="/terminos" style={{color:'#2D6A4F'}}>Términos de uso</a> y <a href="/privacidad" style={{color:'#2D6A4F'}}>Política de privacidad</a>
           </p>
 
           <button onClick={() => window.location.href='/precios'} style={{width:'100%',padding:'0.75rem',background:'none',border:'none',color:'#6B7280',fontSize:'0.85rem',cursor:'pointer',marginTop:'0.5rem'}}>← Volver</button>
