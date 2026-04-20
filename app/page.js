@@ -117,4 +117,5 @@ export default function Home() {
       <p style={{color:'rgba(255,255,255,0.4)',fontSize:'0.78rem',marginTop:'1rem',textAlign:'center'}}> Cancela cuando quieras.</p>
     </main>
   )
+
 }
