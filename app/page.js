@@ -114,7 +114,7 @@ export default function Home() {
         <button onClick={() => setPantalla('como-funciona')} style={{width:'100%',padding:'0.75rem',background:'transparent',color:'rgba(255,255,255,0.7)',border:'none',fontSize:'0.88rem',cursor:'pointer'}}>Ver cómo funciona ↓</button>
         <button onClick={() => window.location.href='/login'} style={{width:'100%',padding:'0.5rem',background:'transparent',color:'rgba(255,255,255,0.5)',border:'none',fontSize:'0.85rem',cursor:'pointer'}}>Ya tengo cuenta →</button>
       </div>
-      <p style={{color:'rgba(255,255,255,0.4)',fontSize:'0.78rem',marginTop:'1rem',textAlign:'center'}}>Sin tarjeta de crédito. Cancela cuando quieras.</p>
+      <p style={{color:'rgba(255,255,255,0.4)',fontSize:'0.78rem',marginTop:'1rem',textAlign:'center'}}> Cancela cuando quieras.</p>
     </main>
   )
 }
