@@ -145,7 +145,7 @@ export default function Login() {
 
         {modo === 'registro' && (
           <p style={{color:'#6B7280', fontSize:'0.85rem', marginBottom:'1.2rem', textAlign:'center'}}>
-            7 días gratis · Sin tarjeta de crédito
+            7 días gratis · Cancela cuando quieras
           </p>
         )}
 
