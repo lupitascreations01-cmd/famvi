@@ -64,7 +64,7 @@ export async function POST(request) {
     const estado = datos?.status // active, cancelled, expired, past_due
 
     if (tipo === 'subscription_created' || tipo === 'subscription_updated') {
-      if (estado === 'active') {
+      if (estado === 'active' || estado === 'on_trial') {
         // Calcular fecha de próximo pago (fin del período actual)
         const renewsAt = datos?.renews_at ? new Date(datos.renews_at).toISOString() : null
 
