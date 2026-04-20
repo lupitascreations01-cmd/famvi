@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const PLANES = [
   {
@@ -10,11 +10,10 @@ const PLANES = [
     anual: 99,
     anualMes: 8.25,
     urlMensual: 'https://famvi.lemonsqueezy.com/checkout/buy/9d377591-719d-4d20-8d51-ad2b2e5f8656',
-    urlAnual: null, // agregar cuando crees el producto anual
+    urlAnual: null,
     color: 'white',
     borde: '#E5E7EB',
     badge: null,
-    textoBtn: '#1A1A2E',
     bgBtn: '#2D6A4F',
     colorBtn: 'white',
     features: [
@@ -74,6 +73,12 @@ const PLANES = [
 
 export default function Precios() {
   const [ciclo, setCiclo] = useState('mensual')
+  const [expirado, setExpirado] = useState(false)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setExpirado(params.get('expired') === 'true')
+  }, [])
 
   const irACheckout = (plan) => {
     const url = ciclo === 'anual' ? (plan.urlAnual || plan.urlMensual) : plan.urlMensual
@@ -84,14 +89,20 @@ export default function Precios() {
     <main style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', fontFamily: 'sans-serif', padding: '2rem' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto' }}>
 
-        {/* Logo */}
         <h1 style={{ color: '#fff', fontWeight: '300', fontSize: '2rem', textAlign: 'center', paddingTop: '2rem', marginBottom: '0.3rem' }}>
           fam<span style={{ color: '#74C69D' }}>vi</span>
         </h1>
         <h2 style={{ color: 'white', fontWeight: '400', fontSize: '1.5rem', textAlign: 'center', marginBottom: '0.5rem' }}>Elige tu plan</h2>
-        <p style={{ color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginBottom: '2rem', fontSize: '0.9rem' }}>Sin contratos. Cancela cuando quieras.</p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Sin contratos. Cancela cuando quieras.</p>
 
-        {/* Toggle mensual/anual */}
+        {expirado && (
+          <div style={{ background: '#FEE2E2', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem', textAlign: 'center' }}>
+            <p style={{ color: '#E76F51', fontSize: '0.88rem', margin: 0 }}>
+              ⏰ Tu período de prueba ha terminado. Elige un plan para continuar usando Famvi.
+            </p>
+          </div>
+        )}
+
         <div style={{ display: 'flex', background: 'rgba(255,255,255,0.1)', borderRadius: '50px', padding: '4px', maxWidth: '260px', margin: '0 auto 2rem' }}>
           <button onClick={() => setCiclo('mensual')} style={{ flex: 1, padding: '0.6rem', borderRadius: '50px', border: 'none', background: ciclo === 'mensual' ? 'white' : 'transparent', color: ciclo === 'mensual' ? '#1A1A2E' : 'rgba(255,255,255,0.7)', fontWeight: '500', cursor: 'pointer', fontSize: '0.88rem' }}>
             Mensual
@@ -101,7 +112,6 @@ export default function Precios() {
           </button>
         </div>
 
-        {/* Planes */}
         {PLANES.map(plan => (
           <div key={plan.nombre} style={{ background: plan.color, borderRadius: '20px', padding: '1.5rem', marginBottom: '1rem', border: `2px solid ${plan.borde}`, position: 'relative' }}>
             {plan.badge && (
@@ -109,7 +119,6 @@ export default function Precios() {
                 {plan.badge}
               </span>
             )}
-
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
               <div>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: plan.nombre === 'Familiar' ? 'white' : '#1A1A2E', marginBottom: '0.2rem' }}>{plan.nombre}</h3>
@@ -127,7 +136,6 @@ export default function Precios() {
                 )}
               </div>
             </div>
-
             <div style={{ marginBottom: '1.2rem' }}>
               {plan.features.map(f => (
                 <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
@@ -136,14 +144,12 @@ export default function Precios() {
                 </div>
               ))}
             </div>
-
             <button
               onClick={() => irACheckout(plan)}
               style={{ width: '100%', padding: '0.9rem', background: plan.bgBtn, color: plan.colorBtn, border: 'none', borderRadius: '12px', fontSize: '0.95rem', fontWeight: '600', cursor: 'pointer' }}
             >
               Elegir {plan.nombre} →
             </button>
-
             {ciclo === 'anual' && !plan.urlAnual && (
               <p style={{ fontSize: '0.72rem', color: plan.nombre === 'Familiar' ? 'rgba(255,255,255,0.5)' : '#9CA3AF', textAlign: 'center', marginTop: '0.5rem' }}>
                 * Plan anual próximamente — se aplicará precio mensual
@@ -152,7 +158,6 @@ export default function Precios() {
           </div>
         ))}
 
-        {/* Trial note */}
         <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1rem', marginBottom: '1rem', textAlign: 'center' }}>
           <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.82rem', margin: 0 }}>
             🎁 Todos los planes incluyen <strong style={{ color: '#74C69D' }}>7 días gratis</strong> sin cargo. Cancela antes y no se te cobra nada.
@@ -162,6 +167,7 @@ export default function Precios() {
         <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '0.75rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', cursor: 'pointer' }}>
           ← Volver
         </button>
+
       </div>
     </main>
   )
