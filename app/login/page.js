@@ -220,9 +220,9 @@ export default function Login() {
 
         <p style={{textAlign:'center', fontSize:'0.75rem', color:'#9CA3AF', lineHeight:'1.5'}}>
           Al crear tu cuenta aceptas nuestros{' '}
-          <span style={{color:'#2D6A4F', cursor:'pointer'}}>Términos de uso</span>
-          {' '}y{' '}
-          <span style={{color:'#2D6A4F', cursor:'pointer'}}>Política de privacidad</span>
+          <a href="/terminos" style={{color:'#2D6A4F'}}>Términos de uso</a>
+{' '}y{' '}
+<a href="/privacidad" style={{color:'#2D6A4F'}}>Política de privacidad</a>
         </p>
 
         <button
