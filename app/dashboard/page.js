@@ -78,6 +78,24 @@ export default function Dashboard() {
         if (checkinsData) setCheckins(checkinsData)
       }
 
+      // Verificar si el trial expiró y no tiene plan activo
+const { data: usuarioData } = await supabase
+  .from('usuarios')
+  .select('plan, plan_estado, trial_hasta')
+  .eq('id', user.id)
+  .single()
+
+if (usuarioData) {
+  const planEstado = usuarioData.plan_estado
+  const trialHasta = usuarioData.trial_hasta ? new Date(usuarioData.trial_hasta) : null
+  const trialExpirado = trialHasta && trialHasta < new Date()
+
+  if ((planEstado === 'cancelado' || planEstado === 'vencido') || 
+      (trialExpirado && planEstado === 'trial')) {
+    window.location.href = '/precios?expired=true'
+    return
+  }
+}
       setCargando(false)
     }
     cargarDatos()
