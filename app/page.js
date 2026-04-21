@@ -2,8 +2,8 @@
 import { useState } from 'react'
 
 const Logo = () => (
-  <div style={{ textAlign:'center', marginBottom:'-1rem' }}>
-    <img src="/logo.png" alt="famvi" style={{ height:'32px', filter:'brightness(0) invert(1)' }} />
+  <div style={{ textAlign:'center', marginBottom:'1.5rem' }}>
+    <img src="/logo.png" alt="famvi" style={{ height:'80px', filter:'brightness(0) invert(1)' }} />
   </div>
 )
 
