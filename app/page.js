@@ -47,7 +47,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <button onClick={() => window.location.href='/login'} style={{ width:'100%', padding:'1rem', background:'#74C69D', color:'#1A1A2E', border:'none', borderRadius:'50px', fontSize:'1rem', fontWeight:'600', cursor:'pointer', marginTop:'0.5rem' }}>Comenzar gratis →</button>
+          <button onClick={() => window.location.href='/precios'} style={{ width:'100%', padding:'1rem', background:'#74C69D', color:'#1A1A2E', border:'none', borderRadius:'50px', fontSize:'1rem', fontWeight:'600', cursor:'pointer', marginTop:'0.5rem' }}>Comenzar gratis →</button>
           <button onClick={() => setPantalla('landing')} style={{ width:'100%', padding:'0.75rem', background:'none', border:'none', color:'rgba(255,255,255,0.6)', fontSize:'0.85rem', cursor:'pointer', marginTop:'0.5rem' }}>← Volver</button>
         </div>
       </main>
