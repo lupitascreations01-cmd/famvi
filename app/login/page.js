@@ -10,7 +10,7 @@ const supabase = createClient(
 
 const Logo = () => (
   <div style={{ textAlign:'center', marginBottom:'1.5rem' }}>
-    <img src="/logo.png" alt="famvi" style={{ height:'100px', filter:'brightness(0) invert(1)' }} />
+    <img src="/logo.png" alt="famvi" style={{ height:'150px', filter:'brightness(0) invert(1)' }} />
   </div>
 )
 
