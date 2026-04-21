@@ -67,7 +67,7 @@ export default function Login() {
   return (
     <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:'sans-serif', padding:'2rem' }}>
       
-      <img src="/logo.png" alt="famvi" style={{ height:'36px', marginBottom:'1.5rem' }} />
+     <img src="/logo.png" alt="famvi" style={{ height:'48px', marginBottom:'1rem', filter:'brightness(0) invert(1)' }} />
 
       <div style={{ background:'white', borderRadius:'24px', padding:'2rem', width:'100%', maxWidth:'400px', boxShadow:'0 20px 60px rgba(0,0,0,0.3)' }}>
         <div style={{ display:'flex', background:'#F8F7F4', borderRadius:'12px', padding:'4px', marginBottom:'1.5rem' }}>

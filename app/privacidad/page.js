@@ -4,7 +4,7 @@ export default function Privacidad() {
       <div style={{ maxWidth:'700px', margin:'0 auto' }}>
         <a href="/" style={{ color:'#2D6A4F', fontSize:'0.88rem', textDecoration:'none', display:'inline-block', marginBottom:'2rem' }}>← Volver</a>
         <div style={{ marginBottom:'0.5rem' }}>
-          <img src="/logo.png" alt="famvi" style={{ height:'28px' }} />
+          <img src="/logo.png" alt="famvi" style={{ height:'32px' }} />
         </div>
         <h2 style={{ fontSize:'1.3rem', fontWeight:'500', color:'#1A1A2E', marginBottom:'0.3rem' }}>Política de Privacidad</h2>
         <p style={{ color:'#6B7280', fontSize:'0.85rem', marginBottom:'2rem' }}>Última actualización: abril 2026</p>

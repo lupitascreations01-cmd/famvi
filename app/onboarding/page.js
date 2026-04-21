@@ -130,7 +130,7 @@ export default function Onboarding() {
   const estiloInput = { width:'100%', padding:'0.8rem', border:'1.5px solid #E5E7EB', borderRadius:'12px', marginBottom:'0.75rem', fontSize:'0.95rem', boxSizing:'border-box', outline:'none', fontFamily:'sans-serif' }
   const estiloBtn = { width:'100%', padding:'1rem', background:cargando?'#9CA3AF':'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'1rem', fontWeight:'500', cursor:cargando?'not-allowed':'pointer', marginTop:'0.5rem' }
   const fondoBase = { minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:'sans-serif', padding:'2rem' }
-  const logo = <img src="/logo.png" alt="famvi" style={{ height:'32px', marginBottom:'1rem' }} />
+  const logo = <img src="/logo.png" alt="famvi" style={{ height:'48px', marginBottom:'1rem', filter:'brightness(0) invert(1)' }} />
   const card = (children) => <div style={{ background:'white', borderRadius:'24px', padding:'2rem', width:'100%', maxWidth:'420px', boxShadow:'0 20px 60px rgba(0,0,0,0.3)' }}>{children}</div>
   const pasoLabel = (n, total) => (
     <>

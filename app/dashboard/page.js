@@ -96,7 +96,7 @@ export default function Dashboard() {
 
       {/* Header con logo imagen */}
       <div style={{ background:'white', padding:'1rem 1.5rem', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', position:'sticky', top:0, zIndex:10 }}>
-        <img src="/logo.png" alt="famvi" style={{ height:'28px' }} />
+        <img src="/logo.png" alt="famvi" style={{ height:'32px' }} />
         <div style={{ display:'flex', alignItems:'center', gap:'0.75rem' }}>
           <div style={{ display:'flex', alignItems:'center', gap:'0.5rem', background:'#D8F3DC', padding:'0.35rem 0.85rem', borderRadius:'20px' }}>
             <div style={{ width:'26px', height:'26px', background:'#2D6A4F', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'0.7rem', fontWeight:'600' }}>{nombreUsuario.charAt(0).toUpperCase()}</div>

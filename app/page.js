@@ -9,7 +9,7 @@ export default function Home() {
       <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', fontFamily:'sans-serif', padding:'2rem' }}>
         <div style={{ maxWidth:'500px', margin:'0 auto' }}>
           <div style={{ textAlign:'center', paddingTop:'2rem', marginBottom:'2rem' }}>
-            <img src="/logo.png" alt="famvi" style={{ height:'32px' }} />
+           <img src="/logo.png" alt="famvi" style={{ height:'48px', marginBottom:'1rem', filter:'brightness(0) invert(1)' }} />
           </div>
           <p style={{ color:'rgba(255,255,255,0.6)', textAlign:'center', marginBottom:'2rem', fontStyle:'italic' }}>¿Cómo funciona?</p>
           {[['1','Tú configuras en 5 minutos','Agregas a tu familiar, eliges qué monitorear y a qué horas enviar los check-ins.'],['2','Tu familiar recibe mensajes en WhatsApp','Nada que instalar. Solo responde botones simples desde su WhatsApp de siempre.'],['3','Tú ves el resumen en tu dashboard','Cada día ves cómo estuvo — qué respondió, cómo se sintió, si comió bien.'],['4','Alerta si algo falla','Si tu familiar no responde, recibes una notificación inmediata en tu WhatsApp.']].map(([num, titulo, desc]) => (
