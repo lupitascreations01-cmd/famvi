@@ -25,7 +25,7 @@ export default function Precios() {
     <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', fontFamily:'sans-serif', padding:'2rem' }}>
       <div style={{ maxWidth:'600px', margin:'0 auto' }}>
         <div style={{ textAlign:'center', paddingTop:'2rem', marginBottom:'0.5rem' }}>
-          <img src="/logo.png" alt="famvi" style={{ height:'48px', marginBottom:'1rem', filter:'brightness(0) invert(1)' }} />
+          <img src="/logo.png" alt="famvi" style={{ height:'64px', marginBottom:'1rem', filter:'brightness(0) invert(1)' }} />
         </div>
         <h2 style={{ color:'white', fontWeight:'400', fontSize:'1.5rem', textAlign:'center', marginBottom:'0.5rem' }}>Elige tu plan</h2>
         <p style={{ color:'rgba(255,255,255,0.6)', textAlign:'center', marginBottom:'1.5rem', fontSize:'0.9rem' }}>Sin contratos. Cancela cuando quieras.</p>
