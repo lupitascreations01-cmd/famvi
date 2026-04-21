@@ -8,6 +8,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 )
 
+const Logo = () => (
+  <div style={{ textAlign:'center', marginBottom:'1rem' }}>
+    <img src="/logo.png" alt="famvi" style={{ height:'80px', filter:'brightness(0) invert(1)' }} />
+  </div>
+)
+
 function formatearWhatsapp(valor) {
   let limpio = valor.replace(/[^\d+]/g, '')
   if (limpio.startsWith('00')) limpio = '+' + limpio.slice(2)
@@ -24,18 +30,11 @@ function InputWhatsapp({ value, onChange, placeholder }) {
   const [tocado, setTocado] = useState(false)
   const valido = validarWhatsapp(value)
   const mostrarError = tocado && value.length > 1 && !valido
-
   return (
     <div style={{ marginBottom:'0.75rem' }}>
       <div style={{ position:'relative' }}>
-        <input
-          placeholder={placeholder || 'WhatsApp (+56912345678)'}
-          value={value}
-          onChange={e => onChange(formatearWhatsapp(e.target.value))}
-          onBlur={() => setTocado(true)}
-          inputMode="tel"
-          style={{ width:'100%', padding:'0.8rem', paddingRight:value.length>3?'2.5rem':'0.8rem', border:`1.5px solid ${mostrarError?'#E76F51':valido&&tocado?'#74C69D':'#E5E7EB'}`, borderRadius:'12px', fontSize:'0.95rem', boxSizing:'border-box', outline:'none', fontFamily:'sans-serif', background:'white' }}
-        />
+        <input placeholder={placeholder||'WhatsApp (+56912345678)'} value={value} onChange={e => onChange(formatearWhatsapp(e.target.value))} onBlur={() => setTocado(true)} inputMode="tel"
+          style={{ width:'100%', padding:'0.8rem', paddingRight:value.length>3?'2.5rem':'0.8rem', border:`1.5px solid ${mostrarError?'#E76F51':valido&&tocado?'#74C69D':'#E5E7EB'}`, borderRadius:'12px', fontSize:'0.95rem', boxSizing:'border-box', outline:'none', fontFamily:'sans-serif', background:'white' }} />
         {value.length > 3 && <span style={{ position:'absolute', right:'0.75rem', top:'50%', transform:'translateY(-50%)', fontSize:'1rem' }}>{valido?'✅':'❌'}</span>}
       </div>
       <div style={{ background:'#F8F7F4', borderRadius:'10px', padding:'0.6rem 0.8rem', marginTop:'0.4rem' }}>
@@ -89,7 +88,7 @@ export default function Onboarding() {
     if (!validarWhatsapp(whatsappHijo)) { setError('El número de WhatsApp no es válido. Incluye el código de país sin espacios, ej: +56912345678'); return }
     setError(''); setCargando(true)
     try {
-      await supabase.from('usuarios').upsert({ id: usuario.id, nombre: nombreHijo, whatsapp: whatsappHijo, plan: 'trial' })
+      await supabase.from('usuarios').upsert({ id:usuario.id, nombre:nombreHijo, whatsapp:whatsappHijo, plan:'trial' })
       setPaso(2)
     } catch { setError('Error al guardar. Intenta de nuevo.') }
     finally { setCargando(false) }
@@ -119,9 +118,9 @@ export default function Onboarding() {
     if (dias.length === 0) { setError('Selecciona al menos un día'); return }
     setCargando(true); setError('')
     try {
-      const { data: familiarData, error: familiarError } = await supabase.from('familiares').insert({ usuario_id: usuario.id, nombre: nombreFamiliar, relacion, whatsapp: whatsappFamiliar, ciudad, activo: true }).select().single()
+      const { data: familiarData, error: familiarError } = await supabase.from('familiares').insert({ usuario_id:usuario.id, nombre:nombreFamiliar, relacion, whatsapp:whatsappFamiliar, ciudad, activo:true }).select().single()
       if (familiarError) throw familiarError
-      await supabase.from('configuraciones').insert({ familiar_id: familiarData.id, categorias, dias, hora_manana: activarManana ? horaManana : null, hora_mediodia: activarMedio ? horaMedio : null, hora_tarde: activarTarde ? horaTarde : null, hora_noche: activarNoche ? '21:00' : null })
+      await supabase.from('configuraciones').insert({ familiar_id:familiarData.id, categorias, dias, hora_manana:activarManana?horaManana:null, hora_mediodia:activarMedio?horaMedio:null, hora_tarde:activarTarde?horaTarde:null, hora_noche:activarNoche?'21:00':null })
       setPaso(4)
     } catch (err) { setError('Error al guardar. Intenta de nuevo.'); console.error(err) }
     finally { setCargando(false) }
@@ -130,7 +129,6 @@ export default function Onboarding() {
   const estiloInput = { width:'100%', padding:'0.8rem', border:'1.5px solid #E5E7EB', borderRadius:'12px', marginBottom:'0.75rem', fontSize:'0.95rem', boxSizing:'border-box', outline:'none', fontFamily:'sans-serif' }
   const estiloBtn = { width:'100%', padding:'1rem', background:cargando?'#9CA3AF':'#2D6A4F', color:'white', border:'none', borderRadius:'12px', fontSize:'1rem', fontWeight:'500', cursor:cargando?'not-allowed':'pointer', marginTop:'0.5rem' }
   const fondoBase = { minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:'sans-serif', padding:'2rem' }
-  const logo = <img src="/logo.png" alt="famvi" style={{ height:'64px', marginBottom:'1rem', filter:'brightness(0) invert(1)' }} />
   const card = (children) => <div style={{ background:'white', borderRadius:'24px', padding:'2rem', width:'100%', maxWidth:'420px', boxShadow:'0 20px 60px rgba(0,0,0,0.3)' }}>{children}</div>
   const pasoLabel = (n, total) => (
     <>
@@ -142,7 +140,7 @@ export default function Onboarding() {
   )
 
   if (paso === 1) return (
-    <main style={fondoBase}>{logo}{card(<>
+    <main style={fondoBase}><Logo />{card(<>
       {pasoLabel(1,3)}
       <h2 style={{ fontSize:'1.5rem', fontWeight:'400', marginBottom:'0.4rem' }}>Cuéntanos sobre ti</h2>
       <p style={{ color:'#6B7280', fontSize:'0.88rem', marginBottom:'1.5rem' }}>Te enviaremos alertas a este WhatsApp.</p>
@@ -156,7 +154,7 @@ export default function Onboarding() {
   )
 
   if (paso === 2) return (
-    <main style={fondoBase}>{logo}{card(<>
+    <main style={fondoBase}><Logo />{card(<>
       {pasoLabel(2,3)}
       <h2 style={{ fontSize:'1.5rem', fontWeight:'400', marginBottom:'0.4rem' }}>¿A quién cuidas?</h2>
       <p style={{ color:'#6B7280', fontSize:'0.88rem', marginBottom:'1.5rem' }}>No tiene que instalar nada — solo usa su WhatsApp.</p>
@@ -174,7 +172,7 @@ export default function Onboarding() {
   )
 
   if (paso === 3) return (
-    <main style={{ ...fondoBase, justifyContent:'flex-start', paddingTop:'2rem' }}>{logo}{card(<>
+    <main style={{ ...fondoBase, justifyContent:'flex-start', paddingTop:'2rem' }}><Logo />{card(<>
       {pasoLabel(3,3)}
       <h2 style={{ fontSize:'1.5rem', fontWeight:'400', marginBottom:'0.4rem' }}>¿Qué quieres monitorear?</h2>
       <p style={{ color:'#6B7280', fontSize:'0.88rem', marginBottom:'1.2rem' }}>Elige áreas, días y horarios.</p>
@@ -209,7 +207,7 @@ export default function Onboarding() {
   )
 
   return (
-    <main style={fondoBase}>{logo}{card(<>
+    <main style={fondoBase}><Logo />{card(<>
       <div style={{ textAlign:'center', marginBottom:'1.5rem' }}>
         <div style={{ width:'64px', height:'64px', background:'#D8F3DC', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'2rem', margin:'0 auto 1rem' }}>✅</div>
         <h2 style={{ fontSize:'1.5rem', fontWeight:'400', marginBottom:'0.4rem' }}>¡Todo listo!</h2>

@@ -1,6 +1,12 @@
 'use client'
 import { useState } from 'react'
 
+const Logo = () => (
+  <div style={{ textAlign:'center', marginBottom:'1rem' }}>
+    <img src="/logo.png" alt="famvi" style={{ height:'80px', filter:'brightness(0) invert(1)' }} />
+  </div>
+)
+
 export default function Home() {
   const [pantalla, setPantalla] = useState('landing')
 
@@ -8,9 +14,7 @@ export default function Home() {
     return (
       <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', fontFamily:'sans-serif', padding:'2rem' }}>
         <div style={{ maxWidth:'500px', margin:'0 auto' }}>
-          <div style={{ textAlign:'center', paddingTop:'2rem', marginBottom:'2rem' }}>
-           <img src="/logo.png" alt="famvi" style={{ height:'48px', marginBottom:'1rem', filter:'brightness(0) invert(1)' }} />
-          </div>
+          <div style={{ paddingTop:'2rem', marginBottom:'1rem' }}><Logo /></div>
           <p style={{ color:'rgba(255,255,255,0.6)', textAlign:'center', marginBottom:'2rem', fontStyle:'italic' }}>¿Cómo funciona?</p>
           {[['1','Tú configuras en 5 minutos','Agregas a tu familiar, eliges qué monitorear y a qué horas enviar los check-ins.'],['2','Tu familiar recibe mensajes en WhatsApp','Nada que instalar. Solo responde botones simples desde su WhatsApp de siempre.'],['3','Tú ves el resumen en tu dashboard','Cada día ves cómo estuvo — qué respondió, cómo se sintió, si comió bien.'],['4','Alerta si algo falla','Si tu familiar no responde, recibes una notificación inmediata en tu WhatsApp.']].map(([num, titulo, desc]) => (
             <div key={num} style={{ background:'rgba(255,255,255,0.08)', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', display:'flex', gap:'1rem', border:'1px solid rgba(255,255,255,0.1)' }}>
@@ -52,7 +56,7 @@ export default function Home() {
 
   return (
     <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:'sans-serif', padding:'2rem' }}>
-      <img src="/logo.png" alt="famvi" style={{ height:'44px', marginBottom:'0.5rem' }} />
+      <Logo />
       <p style={{ color:'rgba(255,255,255,0.75)', fontSize:'1.05rem', fontStyle:'italic', marginBottom:'2.5rem' }}>para los que cuidan desde lejos</p>
       <div style={{ display:'flex', flexDirection:'column', gap:'0.75rem', width:'100%', maxWidth:'320px' }}>
         <button onClick={() => window.location.href='/login'} style={{ width:'100%', padding:'1rem', background:'#74C69D', color:'#1A1A2E', border:'2px solid #74C69D', borderRadius:'50px', fontSize:'0.95rem', fontWeight:'600', cursor:'pointer' }}>Comenzar prueba gratis — 7 días →</button>
