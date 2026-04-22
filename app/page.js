@@ -2,9 +2,7 @@
 import { useState } from 'react'
 
 const Logo = () => (
-  <div style={{ width:'100%', textAlign:'center', marginBottom:'1rem' }}>
-    <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)' }} />
-  </div>
+  <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)', marginBottom:'1rem' }} />
 )
 
 export default function Home() {
