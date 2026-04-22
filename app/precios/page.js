@@ -3,11 +3,8 @@
 import { useState, useEffect } from 'react'
 
 const Logo = () => (
-  <div style={{ width:'100%', textAlign:'center', marginBottom:'1rem' }}>
-    <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)' }} />
-  </div>
+  <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)', marginBottom:'1rem' }} />
 )
-
 const PLANES = [
   { nombre:'Básico', familiares:'1 familiar', mensual:9.99, anual:99, anualMes:8.25, urlMensual:'https://famvi.lemonsqueezy.com/checkout/buy/9d377591-719d-4d20-8d51-ad2b2e5f8656', urlAnual:null, color:'white', borde:'#E5E7EB', badge:null, bgBtn:'#2D6A4F', colorBtn:'white', features:['1 familiar monitoreado','Check-ins diarios por WhatsApp','Alertas inmediatas','Dashboard web','Historial 30 días'] },
   { nombre:'Familiar', familiares:'hasta 3 familiares', mensual:17.99, anual:179, anualMes:14.92, urlMensual:'https://famvi.lemonsqueezy.com/checkout/buy/118b895c-621b-49d9-be87-f30e0d8ab6c2', urlAnual:null, color:'#2D6A4F', borde:'#2D6A4F', badge:'Más popular', bgBtn:'#74C69D', colorBtn:'#1A1A2E', features:['Hasta 3 familiares','Check-ins diarios por WhatsApp','Alertas inmediatas','Dashboard web','Historial ilimitado','Reportes semanales'] },
