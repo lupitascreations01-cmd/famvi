@@ -48,9 +48,10 @@ export default function Dashboard() {
         const planEstado = usuarioData.plan_estado
         const trialHasta = usuarioData.trial_hasta ? new Date(usuarioData.trial_hasta) : null
         const trialExpirado = trialHasta && trialHasta < new Date()
-        if ((planEstado === 'cancelado' || planEstado === 'vencido') || (trialExpirado && planEstado === 'trial')) {
-          window.location.href = '/precios?expired=true'; return
-        }
+const planActivo = ['trial', 'trial_pagado', 'activo'].includes(planEstado)
+if (!planActivo || (trialExpirado && planEstado === 'trial')) {
+  window.location.href = '/precios?expired=true'; return
+}
       }
 
       const { data: familiaresData } = await supabase.from('familiares').select('*, configuraciones(*)').eq('usuario_id', user.id).eq('activo', true)
