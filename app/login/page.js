@@ -9,8 +9,8 @@ const supabase = createClient(
 )
 
 const Logo = () => (
-  <div style={{ textAlign:'center', marginBottom:'0.5rem' }}>
-    <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)', marginBottom:'-2rem' }} />
+  <div style={{ width:'100%', textAlign:'center', marginBottom:'1rem' }}>
+    <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)' }} />
   </div>
 )
 
@@ -19,13 +19,18 @@ export default function Login() {
   const [correo, setCorreo] = useState('')
   const [password, setPassword] = useState('')
   const [cargando, setCargando] = useState(false)
+  const [verificando, setVerificando] = useState(true)
   const [error, setError] = useState('')
   const [mensaje, setMensaje] = useState('')
 
   useEffect(() => {
     const verificar = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) window.location.href = '/dashboard'
+      if (user) {
+        window.location.href = '/dashboard'
+      } else {
+        setVerificando(false)
+      }
     }
     verificar()
   }, [])
@@ -60,7 +65,10 @@ export default function Login() {
   const handleGoogle = async () => {
     setCargando(true); setError('')
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider:'google', options:{ redirectTo:`${window.location.origin}/onboarding` } })
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${window.location.origin}/onboarding` }
+      })
       if (error) throw error
     } catch (err) { setError('Error: ' + err.message); setCargando(false) }
   }
@@ -69,11 +77,18 @@ export default function Login() {
     if (!correo) { setError('Ingresa tu correo primero'); return }
     setCargando(true)
     try {
-      await supabase.auth.resetPasswordForEmail(correo, { redirectTo:`${window.location.origin}/reset-password` })
+      await supabase.auth.resetPasswordForEmail(correo, { redirectTo: `${window.location.origin}/reset-password` })
       setMensaje('Te enviamos un link para restablecer tu contraseña')
     } catch { setError('Error al enviar el correo') }
     finally { setCargando(false) }
   }
+
+  // Mostrar nada mientras verifica sesión
+  if (verificando) return (
+    <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <Logo />
+    </main>
+  )
 
   return (
     <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:'sans-serif', padding:'2rem' }}>

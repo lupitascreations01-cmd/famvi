@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 
 const Logo = () => (
-  <div style={{ textAlign:'center', paddingTop:'2rem', marginBottom:'1rem' }}>
-    <img src="/logo.png" alt="famvi" style={{ height:'80px', filter:'brightness(0) invert(1)' }} />
+  <div style={{ width:'100%', textAlign:'center', marginBottom:'1rem' }}>
+    <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)' }} />
   </div>
 )
 
@@ -30,7 +30,7 @@ export default function Precios() {
   return (
     <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', fontFamily:'sans-serif', padding:'2rem' }}>
       <div style={{ maxWidth:'600px', margin:'0 auto' }}>
-        <Logo />
+        <div style={{ paddingTop:'2rem' }}><Logo /></div>
         <h2 style={{ color:'white', fontWeight:'400', fontSize:'1.5rem', textAlign:'center', marginBottom:'0.5rem' }}>Elige tu plan</h2>
         <p style={{ color:'rgba(255,255,255,0.6)', textAlign:'center', marginBottom:'1.5rem', fontSize:'0.9rem' }}>Sin contratos. Cancela cuando quieras.</p>
 

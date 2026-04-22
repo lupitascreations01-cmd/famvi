@@ -2,8 +2,8 @@
 import { useState } from 'react'
 
 const Logo = () => (
-  <div style={{ textAlign:'center', marginBottom:'0.5rem' }}>
-    <img src="/logo.png" alt="famvi" style={{ height:'80px', filter:'brightness(0) invert(1)' }} />
+  <div style={{ width:'100%', textAlign:'center', marginBottom:'1rem' }}>
+    <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)' }} />
   </div>
 )
 
@@ -13,11 +13,11 @@ export default function Home() {
   if (pantalla === 'como-funciona') {
     return (
       <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', fontFamily:'sans-serif', padding:'2rem' }}>
-        <div style={{ maxWidth:'500px', margin:'0 auto' }}>
-          <div style={{ paddingTop:'2rem', marginBottom:'1rem' }}><Logo /></div>
+        <div style={{ maxWidth:'500px', margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center' }}>
+          <div style={{ paddingTop:'2rem', marginBottom:'1rem', width:'100%' }}><Logo /></div>
           <p style={{ color:'rgba(255,255,255,0.6)', textAlign:'center', marginBottom:'2rem', fontStyle:'italic' }}>¿Cómo funciona?</p>
           {[['1','Tú configuras en 5 minutos','Agregas a tu familiar, eliges qué monitorear y a qué horas enviar los check-ins.'],['2','Tu familiar recibe mensajes en WhatsApp','Nada que instalar. Solo responde botones simples desde su WhatsApp de siempre.'],['3','Tú ves el resumen en tu dashboard','Cada día ves cómo estuvo — qué respondió, cómo se sintió, si comió bien.'],['4','Alerta si algo falla','Si tu familiar no responde, recibes una notificación inmediata en tu WhatsApp.']].map(([num, titulo, desc]) => (
-            <div key={num} style={{ background:'rgba(255,255,255,0.08)', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', display:'flex', gap:'1rem', border:'1px solid rgba(255,255,255,0.1)' }}>
+            <div key={num} style={{ background:'rgba(255,255,255,0.08)', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', display:'flex', gap:'1rem', border:'1px solid rgba(255,255,255,0.1)', width:'100%' }}>
               <div style={{ width:'36px', height:'36px', borderRadius:'50%', background:'#74C69D', color:'#1A1A2E', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'600', fontSize:'0.85rem', flexShrink:0 }}>{num}</div>
               <div>
                 <h4 style={{ color:'white', fontSize:'0.95rem', fontWeight:'500', marginBottom:'0.3rem' }}>{titulo}</h4>
@@ -25,7 +25,7 @@ export default function Home() {
               </div>
             </div>
           ))}
-          <div style={{ background:'rgba(255,255,255,0.06)', borderRadius:'20px', padding:'1.2rem', margin:'1.5rem 0', border:'1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ background:'rgba(255,255,255,0.06)', borderRadius:'20px', padding:'1.2rem', margin:'1.5rem 0', border:'1px solid rgba(255,255,255,0.1)', width:'100%' }}>
             <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'0.75rem', textAlign:'center', marginBottom:'1rem', textTransform:'uppercase', letterSpacing:'1px' }}>Lo que ve tu familiar</p>
             <div style={{ borderRadius:'12px', overflow:'hidden', maxWidth:'300px', margin:'0 auto' }}>
               <div style={{ background:'#075E54', padding:'0.7rem 1rem', display:'flex', alignItems:'center', gap:'0.6rem' }}>
@@ -47,7 +47,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <button onClick={() => window.location.href='/precios'} style={{ width:'100%', padding:'1rem', background:'#74C69D', color:'#1A1A2E', border:'none', borderRadius:'50px', fontSize:'1rem', fontWeight:'600', cursor:'pointer', marginTop:'0.5rem' }}>Comenzar gratis →</button>
+          <button onClick={() => window.location.href='/login'} style={{ width:'100%', padding:'1rem', background:'#74C69D', color:'#1A1A2E', border:'none', borderRadius:'50px', fontSize:'1rem', fontWeight:'600', cursor:'pointer', marginTop:'0.5rem' }}>Comenzar gratis →</button>
           <button onClick={() => setPantalla('landing')} style={{ width:'100%', padding:'0.75rem', background:'none', border:'none', color:'rgba(255,255,255,0.6)', fontSize:'0.85rem', cursor:'pointer', marginTop:'0.5rem' }}>← Volver</button>
         </div>
       </main>
