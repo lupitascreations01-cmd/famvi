@@ -2,45 +2,30 @@ import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // necesitas esta key (no la anon)
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-// Interpreta la respuesta de mamá con lógica simple
-// (puedes expandir esto con Claude AI después)
 function clasificarRespuesta(texto) {
   const t = texto.toLowerCase().trim()
 
-  // Botones rápidos de Twilio
   if (t === 'si' || t === 'sí' || t === '✅' || t === 'tome' || t === 'tomé' || t.includes('ya tome') || t.includes('ya tomé')) {
     return { estado: 'verde', resumen: 'Confirmó positivamente' }
   }
-
-  // Snooze
   if (t.includes('recuérda') || t.includes('recuerda') || t.includes('1hr') || t.includes('después') || t.includes('despues') || t.includes('rato')) {
     return { estado: 'amarillo', resumen: 'Pidió recordatorio más tarde' }
   }
-
-  // Señales de alerta
   if (t.includes('mal') || t.includes('dolor') || t.includes('cansad') || t.includes('no pued') || t.includes('ayuda')) {
     return { estado: 'rojo', resumen: 'Indicó que no se siente bien' }
   }
-
-  // Respuestas positivas genéricas
   if (t.includes('bien') || t.includes('perfecto') || t.includes('claro') || t.includes('listo') || t.includes('ok')) {
     return { estado: 'verde', resumen: 'Respondió positivamente' }
   }
-
-  // Respuestas neutras
   if (t.includes('más o menos') || t.includes('mas o menos') || t.includes('regular') || t.includes('ahí') || t.includes('ahi')) {
     return { estado: 'amarillo', resumen: 'Respuesta neutral' }
   }
-
-  // Negaciones
   if (t === 'no' || t.includes('no tomé') || t.includes('no tome') || t.includes('olvidé') || t.includes('olvide')) {
     return { estado: 'rojo', resumen: 'No completó la actividad' }
   }
-
-  // Cualquier otra respuesta = registrar como verde (respondió algo)
   return { estado: 'verde', resumen: 'Respondió al check-in' }
 }
 
@@ -75,7 +60,6 @@ Responde SOLO con un JSON así (sin markdown, sin explicación):
     const raw = data.content[0].text.trim()
     return JSON.parse(raw)
   } catch {
-    // Si Claude falla, usar clasificación simple
     return clasificarRespuesta(texto)
   }
 }
@@ -101,25 +85,23 @@ async function enviarAlerta(hijoWhatsapp, nombreFamiliar, categoria, resumen) {
 export async function POST(request) {
   try {
     const formData = await request.formData()
-    
-    const from = formData.get('From') // whatsapp:+56912345678
+    const from = formData.get('From')
     const body = formData.get('Body') || ''
-    
+
     if (!from || !body) {
       return new Response('OK', { status: 200 })
     }
 
-    // Extraer número limpio
     const whatsappNumero = from.replace('whatsapp:', '').trim()
-    console.log('Número recibido:', whatsappNumero)
 
-    // Buscar familiar por número de WhatsApp
+    // Buscar familiar
     const { data: familiar, error: familiarError } = await supabase
       .from('familiares')
       .select(`
         id,
         nombre,
         usuario_id,
+        bienvenida_enviada,
         usuarios (
           whatsapp,
           nombre
@@ -130,8 +112,6 @@ export async function POST(request) {
       .single()
 
     if (familiarError || !familiar) {
-      console.log('Familiar no encontrado para:', whatsappNumero)
-      // Responder igual para no dejar a mamá sin respuesta
       return new Response(
         `<?xml version="1.0" encoding="UTF-8"?>
         <Response>
@@ -141,7 +121,27 @@ export async function POST(request) {
       )
     }
 
-    // Buscar el último check-in pendiente (enviado en las últimas 4 horas)
+    const primerNombre = familiar.nombre.split(' ')[0]
+
+    // — BIENVENIDA: solo si es la primera vez —
+    if (!familiar.bienvenida_enviada) {
+      await supabase
+        .from('familiares')
+        .update({ bienvenida_enviada: true })
+        .eq('id', familiar.id)
+
+      const mensajeBienvenida = `¡Hola ${primerNombre}! 👋 Soy Famvi. Tu familia me pidió que te acompañe, de vez en cuando te voy a escribir por aquí para saber cómo te sientes, si comiste bien, si tomaste tus medicinas... No tienes que instalar nada — solo respóndeme aquí en WhatsApp cuando te escriba 💙 Pronto recibirás tu primer check-in. ¡Que tengas un lindo día!`
+
+      return new Response(
+        `<?xml version="1.0" encoding="UTF-8"?>
+        <Response>
+          <Message>${mensajeBienvenida}</Message>
+        </Response>`,
+        { headers: { 'Content-Type': 'text/xml' } }
+      )
+    }
+
+    // — FLUJO NORMAL: clasificar respuesta —
     const cuatroHorasAtras = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
     const { data: checkinPendiente } = await supabase
       .from('checkins')
@@ -153,7 +153,6 @@ export async function POST(request) {
       .limit(1)
       .single()
 
-    // Clasificar respuesta (con Claude si hay API key, sino lógica simple)
     let clasificacion
     if (process.env.ANTHROPIC_API_KEY && checkinPendiente) {
       clasificacion = await clasificarConClaude(body, checkinPendiente.categoria)
@@ -161,7 +160,6 @@ export async function POST(request) {
       clasificacion = clasificarRespuesta(body)
     }
 
-    // Guardar respuesta en checkins
     if (checkinPendiente) {
       await supabase
         .from('checkins')
@@ -173,7 +171,6 @@ export async function POST(request) {
         })
         .eq('id', checkinPendiente.id)
     } else {
-      // Mensaje espontáneo (mamá escribió sin que le preguntaran)
       await supabase
         .from('checkins')
         .insert({
@@ -185,7 +182,6 @@ export async function POST(request) {
         })
     }
 
-    // Si el estado es rojo, alertar al hijo
     if (clasificacion.estado === 'rojo' && familiar.usuarios?.whatsapp) {
       await enviarAlerta(
         familiar.usuarios.whatsapp,
@@ -195,10 +191,7 @@ export async function POST(request) {
       )
     }
 
-    // Respuesta a mamá según el estado
     let respuestaMama
-    const primerNombre = familiar.nombre.split(' ')[0]
-
     if (clasificacion.estado === 'verde') {
       respuestaMama = `¡Perfecto ${primerNombre}! ✅ Quedó registrado. Tu familia puede ver que estás bien 💙`
     } else if (clasificacion.estado === 'amarillo') {
@@ -217,11 +210,10 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Error en webhook:', error)
-    return new Response('OK', { status: 200 }) // Twilio necesita 200 siempre
+    return new Response('OK', { status: 200 })
   }
 }
 
-// Twilio verifica el webhook con GET
 export async function GET() {
   return new Response('Famvi WhatsApp Webhook activo ✅', { status: 200 })
 }
