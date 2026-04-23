@@ -130,7 +130,8 @@ export async function POST(request) {
         .update({ bienvenida_enviada: true })
         .eq('id', familiar.id)
 
-      const mensajeBienvenida = `¡Hola ${primerNombre}! 👋 Soy Famvi. Tu familia me pidió que te acompañe, de vez en cuando te voy a escribir por aquí para saber cómo te sientes, si comiste bien, si tomaste tus medicinas... No tienes que instalar nada — solo respóndeme aquí en WhatsApp cuando te escriba 💙 Pronto recibirás tu primer check-in. ¡Que tengas un lindo día!`
+      const mensajeBienvenida = `¡Hola ${primerNombre}! 👋 Soy Famvi. Tu familia me pidió que te acompañe, de vez en cuando te voy a escribir por aquí para saber cómo te sientes, si comiste bien, si tomaste tus medicinas... 
+      No tienes que instalar nada — solo respóndeme aquí en WhatsApp cuando te escriba 💙 Pronto recibirás tu primer check-in. ¡Que tengas un lindo día!`
 
       return new Response(
         `<?xml version="1.0" encoding="UTF-8"?>
