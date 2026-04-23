@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 
 const Logo = () => (
-  <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)', marginBottom:'1rem' }} />
+  <img src="/logo.png" alt="famvi" style={{ height:'50px', filter:'brightness(0) invert(1)', display:'block', margin:'0 auto 1rem' }} />
 )
 const PLANES = [
   { nombre:'Básico', familiares:'1 familiar', mensual:9.99, anual:99, anualMes:8.25, urlMensual:'https://famvi.lemonsqueezy.com/checkout/buy/9d377591-719d-4d20-8d51-ad2b2e5f8656', urlAnual:null, color:'white', borde:'#E5E7EB', badge:null, bgBtn:'#2D6A4F', colorBtn:'white', features:['1 familiar monitoreado','Check-ins diarios por WhatsApp','Alertas inmediatas','Dashboard web','Historial 30 días'] },
