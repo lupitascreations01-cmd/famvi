@@ -12,7 +12,7 @@ export default function Home() {
     return (
       <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', fontFamily:'sans-serif', padding:'2rem' }}>
         <div style={{ maxWidth:'500px', margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center' }}>
-          <div style={{ paddingTop:'2rem', marginBottom:'1rem', width:'100%', textAlign:'center' }}><Logo /></div>
+          <div style={{ paddingTop:'2rem', marginBottom:'1rem', width:'100%', display:'flex', justifyContent:'center' }}><Logo /></div>
           <p style={{ color:'rgba(255,255,255,0.6)', textAlign:'center', marginBottom:'2rem', fontStyle:'italic' }}>¿Cómo funciona?</p>
           {[['1','Tú configuras en 5 minutos','Agregas a tu familiar, eliges qué monitorear y a qué horas enviar los check-ins.'],['2','Tu familiar recibe mensajes en WhatsApp','Nada que instalar. Solo responde botones simples desde su WhatsApp de siempre.'],['3','Tú ves el resumen en tu dashboard','Cada día ves cómo estuvo — qué respondió, cómo se sintió, si comió bien.'],['4','Alerta si algo falla','Si tu familiar no responde, recibes una notificación inmediata en tu WhatsApp.']].map(([num, titulo, desc]) => (
             <div key={num} style={{ background:'rgba(255,255,255,0.08)', borderRadius:'16px', padding:'1.2rem', marginBottom:'1rem', display:'flex', gap:'1rem', border:'1px solid rgba(255,255,255,0.1)', width:'100%' }}>
