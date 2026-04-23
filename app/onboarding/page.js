@@ -51,6 +51,7 @@ function InputWhatsapp({ value, onChange, placeholder }) {
 export default function Onboarding() {
   const [paso, setPaso] = useState(1)
   const [cargando, setCargando] = useState(false)
+  const [verificando, setVerificando] = useState(true)
   const [error, setError] = useState('')
   const [usuario, setUsuario] = useState(null)
   const [nombreHijo, setNombreHijo] = useState('')
@@ -73,7 +74,20 @@ export default function Onboarding() {
     const getUsuario = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { window.location.href = '/login'; return }
+
+      const { data: usuarioData } = await supabase
+        .from('usuarios')
+        .select('nombre')
+        .eq('id', user.id)
+        .single()
+
+      if (usuarioData?.nombre) {
+        window.location.href = '/dashboard'
+        return
+      }
+
       setUsuario(user)
+      setVerificando(false)
     }
     getUsuario()
   }, [])
@@ -135,6 +149,12 @@ export default function Onboarding() {
         <div style={{ width:`${(n/total)*100}%`, height:'100%', background:'#2D6A4F', borderRadius:'2px' }}></div>
       </div>
     </>
+  )
+
+  if (verificando) return (
+    <main style={{ minHeight:'100vh', background:'linear-gradient(135deg, #1A1A2E 0%, #2D6A4F 100%)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <Logo />
+    </main>
   )
 
   if (paso === 1) return (
