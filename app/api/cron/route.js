@@ -65,10 +65,7 @@ function horaActualChile() {
 
 export async function GET(request) {
   // Verificar que viene de Vercel Cron (seguridad básica)
-  const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return Response.json({ error: 'No autorizado' }, { status: 401 })
-  }
+  
 
   const horaActual = horaActualChile()
   const resultados = { enviados: 0, errores: 0, omitidos: 0 }
